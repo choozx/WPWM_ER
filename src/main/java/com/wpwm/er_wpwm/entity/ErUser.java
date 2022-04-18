@@ -29,7 +29,10 @@ public class ErUser {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "userNum")
+    private String userNum;
+
     @Column(name = "name")
-    private String name;
+    private String nickname;
 
 }
