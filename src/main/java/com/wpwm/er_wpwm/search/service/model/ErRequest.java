@@ -16,4 +16,12 @@ public class ErRequest {
         @JsonProperty("query")
         private String query;
     }
+
+    @ToString
+    @Getter
+    @Builder
+    public static class ErGameIdRequest{
+
+        private String userNum;
+    }
 }
