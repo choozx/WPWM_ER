@@ -9,6 +9,7 @@ import com.wpwm.er_wpwm.repository.GamesRepository;
 import com.wpwm.er_wpwm.repository.mapping.GameIdMapping;
 import com.wpwm.er_wpwm.search.service.ErClient;
 import com.wpwm.er_wpwm.search.service.model.ErRequest;
+import com.wpwm.er_wpwm.search.service.model.ErRequest.ErGameInfoRequest;
 import com.wpwm.er_wpwm.search.service.model.ErRequest.ErGameIdRequest;
 import com.wpwm.er_wpwm.search.service.model.ErRequest.ErUserRequest;
 import com.wpwm.er_wpwm.search.service.model.ErResponse;
@@ -75,6 +76,32 @@ public class ErService {
 
         ErGameIdRequest request = ErGameIdRequest.builder()
                 .userNum("1218167")
+                .build();
+
+        ErGameIdResponse erGameIdResponse = null;
+        erGameIdResponse = erClient.getGameId(request);
+        List<GameInfo> gameInfos = erGameIdResponse.getUserGames();
+
+        for (GameInfo gameInfo: gameInfos) {
+            Games game = Games.builder()
+                    .gameId(gameInfo.getGameId())
+                    .userNum(gameInfo.getUserNum())
+                    .build();
+
+            gamesRepository.save(game);
+
+        }
+    }
+
+    /*public String getGameInfo(GameIdMapping gid){ //
+        List<GameIdMapping> gameIds = gamesRepository.findAll(erUser.getUserNum());
+        return gameIds;
+    }*/
+
+    public void saveGameInfo(String GameId){
+
+        ErGameInfoRequest request = ErGameInfoRequest.builder()
+                .gameId("16692574")
                 .build();
 
         ErGameIdResponse erGameIdResponse = null;

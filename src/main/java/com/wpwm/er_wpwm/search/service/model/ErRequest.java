@@ -24,4 +24,12 @@ public class ErRequest {
 
         private String userNum;
     }
+
+    @ToString
+    @Getter
+    @Builder
+    public static class ErGameInfoRequest{
+
+        private String gameId;
+    }
 }
