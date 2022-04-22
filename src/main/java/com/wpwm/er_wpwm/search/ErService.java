@@ -6,18 +6,12 @@ import com.wpwm.er_wpwm.entity.Games;
 import com.wpwm.er_wpwm.exception.ErrorPageException;
 import com.wpwm.er_wpwm.repository.ErUserRepository;
 import com.wpwm.er_wpwm.repository.GamesRepository;
-import com.wpwm.er_wpwm.repository.mapping.GameIdMapping;
 import com.wpwm.er_wpwm.search.service.ErClient;
-import com.wpwm.er_wpwm.search.service.model.ErRequest;
-import com.wpwm.er_wpwm.search.service.model.ErRequest.ErGameInfoRequest;
 import com.wpwm.er_wpwm.search.service.model.ErRequest.ErGameIdRequest;
 import com.wpwm.er_wpwm.search.service.model.ErRequest.ErUserRequest;
-import com.wpwm.er_wpwm.search.service.model.ErResponse;
-import com.wpwm.er_wpwm.search.service.model.ErResponse.ErGameInfoResponse;
-import com.wpwm.er_wpwm.search.service.model.ErResponse.ErGameInfoResponse.player;
-import com.wpwm.er_wpwm.search.service.model.ErResponse.ErUserResponse;
 import com.wpwm.er_wpwm.search.service.model.ErResponse.ErGameIdResponse;
 import com.wpwm.er_wpwm.search.service.model.ErResponse.ErGameIdResponse.GameId;
+import com.wpwm.er_wpwm.search.service.model.ErResponse.ErUserResponse;
 import com.wpwm.er_wpwm.search.service.model.ErResponse.ErUserResponse.ErUserResponseInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -78,18 +72,15 @@ public class ErService {
     public void saveGameId(ErUserForm erUserForm){
 
         erUserForm.setUserNum("1218167");
-        String lastGameId = getLastGameId("1218167");
-        int lastGameId2 = 0;
-        if (lastGameId != null){
-            lastGameId2 = Integer.parseInt(lastGameId);
-        }
+        int lastGameId = getLastGames("1218167").map(Games::getGameId).orElse(0);
 
 
         ErGameIdResponse erGameIdResponse = null;
 
         erGameIdResponse = erClient.getGameId(erUserForm.getUserNum());
+
         while (true){
-            if (erGameIdResponse.getNext() > lastGameId2 && erGameIdResponse.getNext() > 16700000){
+            if (erGameIdResponse.getNext() > lastGameId && erGameIdResponse.getNext() > 16700000){
                 List<GameId> gameInfos = erGameIdResponse.getUserGames();
 
                 for (GameId gameId: gameInfos) {
@@ -113,7 +104,7 @@ public class ErService {
                 List<GameId> gameInfos = erGameIdResponse.getUserGames();
 
                 for (GameId gameId: gameInfos) {
-                    if (gameId.getGameId() == lastGameId2 || gameId.getGameId() < 16700000){
+                    if (gameId.getGameId() == lastGameId || gameId.getGameId() < 16700000){
                         break;
                     } else {
                         Games game = Games.builder()
@@ -150,8 +141,8 @@ public class ErService {
 
     }*/
 
-    private String getLastGameId(String userNum){
-        return gamesRepository.findMaxGameIdByUserNum(userNum);
+    private Optional<Games> getLastGames(String userNum){
+        return gamesRepository.findTopByUserNumOrderByGameIdDesc(userNum);
     }
 
 }

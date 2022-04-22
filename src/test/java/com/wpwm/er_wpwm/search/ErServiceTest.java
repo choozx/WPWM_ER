@@ -20,7 +20,7 @@ class ErServiceTest {
     private ErService erService;
 
     @Test
-    public void 게임아이디얻기() throws InterruptedException {
+    public void 게임아이디얻기() {
         erService.saveGameId(ErUserForm.builder()
                         .userNum("1218167")
                         .build());
