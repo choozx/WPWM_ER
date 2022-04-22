@@ -6,6 +6,7 @@ import com.wpwm.er_wpwm.search.service.model.ErRequest;
 import com.wpwm.er_wpwm.search.service.model.ErRequest.ErGameIdRequest;
 import com.wpwm.er_wpwm.search.service.model.ErRequest.ErUserRequest;
 import com.wpwm.er_wpwm.search.service.model.ErResponse;
+import com.wpwm.er_wpwm.search.service.model.ErResponse.ErGameInfoResponse;
 import com.wpwm.er_wpwm.search.service.model.ErResponse.ErGameIdResponse;
 import com.wpwm.er_wpwm.search.service.model.ErResponse.ErUserResponse;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,8 +28,16 @@ public class ErClient extends Client {
         return get("v1/user/nickname", request, ErUserResponse.class, makeHeaders());
     }
 
-    public ErGameIdResponse getGameId(ErGameIdRequest request){
-        return get("v1/user/games/" + request.getUserNum(), ErGameIdResponse.class, makeHeaders());
+    public ErGameIdResponse getGameId(String userNum){
+        return get("v1/user/games/" + userNum, ErGameIdResponse.class, makeHeaders());
+    }
+
+    public ErGameIdResponse getGameId(String userNum,ErGameIdRequest request){
+        return get("v1/user/games/" + userNum, request, ErGameIdResponse.class, makeHeaders());
+    }
+
+    public ErGameInfoResponse getGameInfo(ErGameIdRequest request){
+        return get("v1/user/games/", ErGameInfoResponse.class, makeHeaders());
     }
 
     private HttpHeaders makeHeaders() {

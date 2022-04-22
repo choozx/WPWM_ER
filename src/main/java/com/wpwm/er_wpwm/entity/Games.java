@@ -19,7 +19,7 @@ public class Games {
     private Long id;
 
     @Column(name = "gameId")
-    private String gameId;
+    private int gameId;
 
     @Column(name = "userNum")
     private String userNum;

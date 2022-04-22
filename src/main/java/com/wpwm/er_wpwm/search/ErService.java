@@ -13,9 +13,11 @@ import com.wpwm.er_wpwm.search.service.model.ErRequest.ErGameInfoRequest;
 import com.wpwm.er_wpwm.search.service.model.ErRequest.ErGameIdRequest;
 import com.wpwm.er_wpwm.search.service.model.ErRequest.ErUserRequest;
 import com.wpwm.er_wpwm.search.service.model.ErResponse;
+import com.wpwm.er_wpwm.search.service.model.ErResponse.ErGameInfoResponse;
+import com.wpwm.er_wpwm.search.service.model.ErResponse.ErGameInfoResponse.player;
 import com.wpwm.er_wpwm.search.service.model.ErResponse.ErUserResponse;
 import com.wpwm.er_wpwm.search.service.model.ErResponse.ErGameIdResponse;
-import com.wpwm.er_wpwm.search.service.model.ErResponse.ErGameIdResponse.GameInfo;
+import com.wpwm.er_wpwm.search.service.model.ErResponse.ErGameIdResponse.GameId;
 import com.wpwm.er_wpwm.search.service.model.ErResponse.ErUserResponse.ErUserResponseInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -72,51 +74,85 @@ public class ErService {
         return gameIds;
     }*/
 
-    public void saveGameId(ErUserForm erUserForm){
 
-        ErGameIdRequest request = ErGameIdRequest.builder()
-                .userNum("1218167")
-                .build();
+    public void saveGameId(ErUserForm erUserForm) throws InterruptedException {
+
+        erUserForm.setUserNum("1218167");
+        String lastGameId = getLastGameId("1218167");
+        int lastGameId2 = 0;
+        if (lastGameId != null){
+            lastGameId2 = Integer.parseInt(lastGameId);
+        }
+
 
         ErGameIdResponse erGameIdResponse = null;
-        erGameIdResponse = erClient.getGameId(request);
-        List<GameInfo> gameInfos = erGameIdResponse.getUserGames();
 
-        for (GameInfo gameInfo: gameInfos) {
-            Games game = Games.builder()
-                    .gameId(gameInfo.getGameId())
-                    .userNum(gameInfo.getUserNum())
-                    .build();
+        erGameIdResponse = erClient.getGameId(erUserForm.getUserNum());
+        while (true){
+            if (erGameIdResponse.getNext() > lastGameId2 && erGameIdResponse.getNext() > 16700000){
+                List<GameId> gameInfos = erGameIdResponse.getUserGames();
 
-            gamesRepository.save(game);
+                for (GameId gameId: gameInfos) {
+                    Games game = Games.builder()
+                            .gameId(gameId.getGameId())
+                            .userNum(gameId.getUserNum())
+                            .build();
+
+                    gamesRepository.save(game);
+
+                }
+                int next = erGameIdResponse.getNext();
+                System.out.println(next);
+                erGameIdResponse = erClient.getGameId(erUserForm.getUserNum(), ErGameIdRequest.builder()
+                        .next(next)
+                        .build()
+                );
+                Thread.sleep(1000);
+
+            } else {
+
+                List<GameId> gameInfos = erGameIdResponse.getUserGames();
+
+                for (GameId gameId: gameInfos) {
+                    if (gameId.getGameId() == lastGameId2 || gameId.getGameId() < 16700000){
+                        break;
+                    } else {
+                        Games game = Games.builder()
+                                .gameId(gameId.getGameId())
+                                .userNum(gameId.getUserNum())
+                                .build();
+
+                        gamesRepository.save(game);
+                    }
+
+                }
+                break;
+            }
 
         }
+
     }
 
-    /*public String getGameInfo(GameIdMapping gid){ //
+    /*public String getGameInfo(GameIdMapping info){ //
         List<GameIdMapping> gameIds = gamesRepository.findAll(erUser.getUserNum());
         return gameIds;
     }*/
 
-    public void saveGameInfo(String GameId){
+    /*public void saveGameInfo(String GameId){
 
         ErGameInfoRequest request = ErGameInfoRequest.builder()
                 .gameId("16692574")
                 .build();
 
-        ErGameIdResponse erGameIdResponse = null;
-        erGameIdResponse = erClient.getGameId(request);
-        List<GameInfo> gameInfos = erGameIdResponse.getUserGames();
+        ErGameInfoResponse erGameInfoResponse = null;
+        erGameInfoResponse = erClient.getGameId(request);
 
-        for (GameInfo gameInfo: gameInfos) {
-            Games game = Games.builder()
-                    .gameId(gameInfo.getGameId())
-                    .userNum(gameInfo.getUserNum())
-                    .build();
+        List<player> gameInfo = erGameInfoResponse.getPlayers();
 
-            gamesRepository.save(game);
+    }*/
 
-        }
+    private String getLastGameId(String userNum){
+        return gamesRepository.findMaxGameIdByUserNum(userNum);
     }
 
 }

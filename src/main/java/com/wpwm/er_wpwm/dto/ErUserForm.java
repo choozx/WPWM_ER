@@ -1,15 +1,15 @@
 package com.wpwm.er_wpwm.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 
-@Getter
+@AllArgsConstructor
+@Data
 public class ErUserForm {
 
     private String nickname;
-
-    public ErUserForm(String nickname) {
-        this.nickname = nickname;
-    }
+    private String userNum;
 
     @Override
     public String toString() {

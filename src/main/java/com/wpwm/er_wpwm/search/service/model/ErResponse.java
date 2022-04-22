@@ -34,16 +34,17 @@ public class ErResponse {
     public static class ErGameIdResponse{
         private int code;
         private String message;
-        private List<GameInfo> userGames;
+        private List<GameId> userGames;
+        private int next;
 
         @ToString
         @Getter
-        public static class GameInfo {
+        public static class GameId {
 
             @JsonProperty("userNum")
             private String userNum;
             @JsonProperty("gameId")
-            private String gameId;
+            private int gameId;
         }
     }
 
@@ -102,6 +103,7 @@ public class ErResponse {
             //private SkillLevelInfo skillLevelInfo;
             //@JsonProperty("skillOrderInfo")  <- 이것도 생각해봐야됨 위에보단 금방 생각 날듯
             //private SkillOrderInfo skillOrderInfo;
+
 
 
 

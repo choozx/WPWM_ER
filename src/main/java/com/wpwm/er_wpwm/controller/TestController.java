@@ -52,7 +52,7 @@ public class TestController {
     }
 
     @PostMapping("/updateGames")
-    public String updateGames(ErUserForm erUserForm){
+    public String updateGames(ErUserForm erUserForm) throws InterruptedException {
         erService.saveGameId(erUserForm);
         return "";
     }

@@ -22,7 +22,8 @@ public class ErRequest {
     @Builder
     public static class ErGameIdRequest{
 
-        private String userNum;
+        @JsonProperty("next")
+        private int next;
     }
 
     @ToString
