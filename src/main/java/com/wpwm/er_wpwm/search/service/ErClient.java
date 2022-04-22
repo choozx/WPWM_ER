@@ -25,18 +25,22 @@ public class ErClient extends Client {
     }
 
     public ErUserResponse getUser(ErUserRequest request){
+        sleep();
         return get("v1/user/nickname", request, ErUserResponse.class, makeHeaders());
     }
 
     public ErGameIdResponse getGameId(String userNum){
+        sleep();
         return get("v1/user/games/" + userNum, ErGameIdResponse.class, makeHeaders());
     }
 
     public ErGameIdResponse getGameId(String userNum,ErGameIdRequest request){
+        sleep();
         return get("v1/user/games/" + userNum, request, ErGameIdResponse.class, makeHeaders());
     }
 
     public ErGameInfoResponse getGameInfo(ErGameIdRequest request){
+        sleep();
         return get("v1/user/games/", ErGameInfoResponse.class, makeHeaders());
     }
 
@@ -44,5 +48,13 @@ public class ErClient extends Client {
         HttpHeaders headers = new HttpHeaders();
         headers.add("x-api-key", apiKey);
         return headers;
+    }
+
+    private void sleep(){
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

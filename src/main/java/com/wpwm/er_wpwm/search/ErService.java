@@ -69,13 +69,13 @@ public class ErService {
         erUserRepository.save(erUser);
     }
 
-    /*public List<GameIdMapping> getGameId(ErUser erUser){
-        List<GameIdMapping> gameIds = gamesRepository.findAll(erUser.getUserNum());
+    public List<Games> getGameId(ErUser erUser){
+        List<Games> gameIds = gamesRepository.findByUserNum(erUser.getUserNum());
         return gameIds;
-    }*/
+    }
 
 
-    public void saveGameId(ErUserForm erUserForm) throws InterruptedException {
+    public void saveGameId(ErUserForm erUserForm){
 
         erUserForm.setUserNum("1218167");
         String lastGameId = getLastGameId("1218167");
@@ -107,7 +107,6 @@ public class ErService {
                         .next(next)
                         .build()
                 );
-                Thread.sleep(1000);
 
             } else {
 

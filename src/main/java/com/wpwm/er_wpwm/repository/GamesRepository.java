@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface GamesRepository extends JpaRepository <Games, Long>{
 
+    List<Games> findByUserNum(String userNum);
 
     @Query(value = "select MAX(game_id) from games where (select * from games where user_num = ?1)", nativeQuery = true)
     String findMaxGameIdByUserNum(String user);
