@@ -1,19 +1,8 @@
 package com.wpwm.er_wpwm.entity;
 
-import java.time.LocalDateTime;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
+
+import javax.persistence.*;
 
 @ToString
 @Getter
@@ -32,7 +21,7 @@ public class ErUser {
     @Column(name = "userNum")
     private String userNum;
 
-    @Column(name = "name")
-    private String nickname;
+    @Column(name = "nickName")
+    private String nickName;
 
 }

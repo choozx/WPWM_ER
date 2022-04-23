@@ -1,4 +1,4 @@
-package com.wpwm.er_wpwm.search.service.model;
+package com.wpwm.er_wpwm.search.client.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
