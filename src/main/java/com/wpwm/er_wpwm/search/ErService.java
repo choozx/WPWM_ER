@@ -23,10 +23,10 @@ public class ErService {
 
     public UserInfo getUser(ErUserForm erUserForm){
 
-        if (middleService.getUserByDB(erUserForm).isEmpty()) {
-            middleService.saveUserByClient(erUserForm);
+        if (middleService.getUserFromDB(erUserForm).isEmpty()) {
+            middleService.saveUserFromClient(erUserForm);
         }
-        ErUser erUser = middleService.getUserByDB(erUserForm).get();
+        ErUser erUser = middleService.getUserFromDB(erUserForm).get();
         UserInfo userInfo = UserInfo.builder()
                 .userNum(erUser.getUserNum())
                 .nickName(erUser.getNickName())

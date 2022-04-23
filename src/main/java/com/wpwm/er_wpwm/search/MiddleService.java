@@ -32,13 +32,13 @@ public class MiddleService {
     private final ErClient erClient;
 
 
-    public Optional<ErUser> getUserByDB(ErUserForm erUserForm) {
+    public Optional<ErUser> getUserFromDB(ErUserForm erUserForm) {
         Optional<ErUser> erUserOptional = erUserRepository.findByNickName(erUserForm.getNickname());
         return erUserOptional;
 
     }
 
-    public void saveUserByClient(ErUserForm erUserForm) {
+    public void saveUserFromClient(ErUserForm erUserForm) {
 
         String name = UriUtils.encodeQueryParam(erUserForm.getNickname(), StandardCharsets.UTF_8.toString());
         ErUserRequest request = ErUserRequest.builder()
