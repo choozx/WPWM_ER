@@ -39,14 +39,6 @@ public class TestController {
         return participants;
     }
 
-    public void test(){
-        // 1,2,3,4,5,6,7
-        // tonfa, glove, bet
-
-        1,2,3,4,5;
-        MasteryType.of(1);
-    }
-
     /*@PostMapping("/searchGames")
     public String searchGames(ErUserForm erUserForm) {
 
