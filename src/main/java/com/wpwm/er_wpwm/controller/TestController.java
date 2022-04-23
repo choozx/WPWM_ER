@@ -3,6 +3,7 @@ package com.wpwm.er_wpwm.controller;
 import com.wpwm.er_wpwm.dto.ErUserForm;
 import com.wpwm.er_wpwm.entity.ErUser;
 import com.wpwm.er_wpwm.entity.Games;
+import com.wpwm.er_wpwm.includeModel.UserInfo;
 import com.wpwm.er_wpwm.repository.ErUserRepository;
 import com.wpwm.er_wpwm.repository.mapping.GameIdMapping;
 import com.wpwm.er_wpwm.search.ErService;
@@ -37,6 +38,18 @@ public class TestController {
     @Autowired
     private ErService erService;
 
+    @PostMapping("/getUser")
+    public UserInfo getUser(ErUserForm erUserForm) {
+
+        UserInfo userInfo = null;
+        if (erService.getNickname(erUserForm).isEmpty()) {
+            erService.saveNickname(erUserForm);
+        }
+        userInfo = erService.getNickname(erUserForm).get();
+
+        //저장된 userNum으로 매치 찾기
+        return userInfo;
+    }
 
     @PostMapping("/searchGames")
     public String searchGames(ModelAndView mv, ErUserForm erUserForm) {
@@ -48,7 +61,25 @@ public class TestController {
         erUser = erService.getNickname(erUserForm).get();
 
        List<Games> gameIds = erService.getGameId(erUser);
+
        mv.addObject("aaa",null);
+
+        //저장된 userNum으로 매치 찾기
+        return "";
+    }
+
+    @PostMapping("/searchGames")
+    public String searchGames(ModelAndView mv, ErUserForm erUserForm) {
+
+        ErUser erUser = null;
+        if (erService.getNickname(erUserForm).isEmpty()) {
+            erService.saveNickname(erUserForm);
+        }
+        erUser = erService.getNickname(erUserForm).get();
+
+        List<Games> gameIds = erService.getGameId(erUser);
+
+        mv.addObject("aaa",null);
 
         //저장된 userNum으로 매치 찾기
         return "";

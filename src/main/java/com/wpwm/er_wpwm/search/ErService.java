@@ -4,6 +4,7 @@ import com.wpwm.er_wpwm.dto.ErUserForm;
 import com.wpwm.er_wpwm.entity.ErUser;
 import com.wpwm.er_wpwm.entity.Games;
 import com.wpwm.er_wpwm.exception.ErrorPageException;
+import com.wpwm.er_wpwm.includeModel.UserInfo;
 import com.wpwm.er_wpwm.repository.ErUserRepository;
 import com.wpwm.er_wpwm.repository.GamesRepository;
 import com.wpwm.er_wpwm.search.service.ErClient;
@@ -32,9 +33,14 @@ public class ErService {
     private final ErClient erClient;
 
 
-    public Optional<ErUser> getNickname(ErUserForm erUserForm) {
+    public Optional<UserInfo> getNickname(ErUserForm erUserForm) {
         Optional<ErUser> erUserOptional = erUserRepository.findByNickname(erUserForm.getNickname());
-        return erUserOptional;
+        UserInfo userInfo = UserInfo.builder()
+                .nickName(erUserOptional.get().getNickname())
+                .userNum(erUserOptional.get().getUserNum())
+                .build();
+        Optional<UserInfo> userInfoOptional =
+        return userInfoOptional;
 
     }
 
