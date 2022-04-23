@@ -1,4 +1,4 @@
-package com.wpwm.er_wpwm.includeModel;
+package com.wpwm.er_wpwm.includeModel.player.element;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

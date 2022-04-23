@@ -1,13 +1,13 @@
-package com.wpwm.er_wpwm.includeModel;
+package com.wpwm.er_wpwm.includeModel.player;
 
+import com.wpwm.er_wpwm.includeModel.player.element.EquipmentInfo;
+import com.wpwm.er_wpwm.includeModel.player.element.MasteryInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import javax.persistence.Column;
-
 @AllArgsConstructor
 @Data
-public class GameInfo {
+public class PlayerInfo {
 
     private String userNum;
     private String nickname;

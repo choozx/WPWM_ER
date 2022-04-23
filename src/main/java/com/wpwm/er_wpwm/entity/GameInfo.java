@@ -1,7 +1,5 @@
 package com.wpwm.er_wpwm.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.wpwm.er_wpwm.search.service.model.ErResponse;
 import lombok.*;
 
 import javax.persistence.*;

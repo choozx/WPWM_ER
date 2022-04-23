@@ -10,7 +10,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "ErUser")
+@Table(name = "Equipment")
 public class Equipment {
 
     @Id
@@ -19,21 +19,21 @@ public class Equipment {
     private Long id;
 
     @Column(name = "gameId")
-    private String nickname;
+    private String gameId;
     @Column(name = "userNum")
     private String userNum;
 
-    @Column(name="0")
+    @Column(name="weapon")
     private String weapon;
-    @Column(name="1")
+    @Column(name="chest")
     private String chest;
-    @Column(name="2")
+    @Column(name="head")
     private String head;
-    @Column(name="3")
+    @Column(name="arm")
     private String arm;
-    @Column(name="4")
+    @Column(name="leg")
     private String leg;
-    @Column(name="5")
+    @Column(name="accessory")
     private String accessory;
 
 }
