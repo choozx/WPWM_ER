@@ -10,7 +10,6 @@ import com.wpwm.er_wpwm.search.service.ErClient;
 import com.wpwm.er_wpwm.search.service.model.ErRequest.ErGameIdRequest;
 import com.wpwm.er_wpwm.search.service.model.ErRequest.ErUserRequest;
 import com.wpwm.er_wpwm.search.service.model.ErResponse.ErGameIdResponse;
-import com.wpwm.er_wpwm.search.service.model.ErResponse.ErGameIdResponse.GameId;
 import com.wpwm.er_wpwm.search.service.model.ErResponse.ErUserResponse;
 import com.wpwm.er_wpwm.search.service.model.ErResponse.ErUserResponse.ErUserResponseInfo;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +20,7 @@ import org.springframework.web.util.UriUtils;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -38,7 +38,7 @@ public class ErService {
 
     }
 
-    public void saveNickname(ErUserForm erUserForm){
+    public void saveNickname(ErUserForm erUserForm) {
 
         String name = UriUtils.encodeQueryParam(erUserForm.getNickname(), StandardCharsets.UTF_8.toString());
         ErUserRequest request = ErUserRequest.builder()
@@ -47,8 +47,8 @@ public class ErService {
 
         ErUserResponse erUserResponse = null;
         try {
-            erUserResponse =  erClient.getUser(request);
-        } catch (Exception e){
+            erUserResponse = erClient.getUser(request);
+        } catch (Exception e) {
             throw new ErrorPageException("user guide page");
         }
         ErUserResponseInfo erUserResponseInfo = erUserResponse.getUser();
@@ -63,64 +63,42 @@ public class ErService {
         erUserRepository.save(erUser);
     }
 
-    public List<Games> getGameId(ErUser erUser){
+    public List<Games> getGameId(ErUser erUser) {
         List<Games> gameIds = gamesRepository.findByUserNum(erUser.getUserNum());
         return gameIds;
     }
 
 
-    public void saveGameId(ErUserForm erUserForm){
+    public void saveGameId(ErUserForm erUserForm) {
 
         erUserForm.setUserNum("1218167");
-        int lastGameId = getLastGames("1218167").map(Games::getGameId).orElse(0);
+
+        Optional<Games> lastGamesOpt = getLastGames(erUserForm.getUserNum());
+        int savePolicy = lastGamesOpt.isEmpty() ? 16700000 : lastGamesOpt.get().getGameId();
 
 
-        ErGameIdResponse erGameIdResponse = null;
+        ErGameIdResponse response = erClient.getGameId(erUserForm.getUserNum());
 
-        erGameIdResponse = erClient.getGameId(erUserForm.getUserNum());
+        while (!response.getUserGames().isEmpty()) {
+            List<Games> gamesList = response.getUserGames().stream()
+                    .map(gameId ->
+                            Games.builder()
+                                    .gameId(gameId.getGameId())
+                                    .userNum(gameId.getUserNum())
+                                    .build()
+                    )
+                    .filter(gameId -> gameId.getGameId() > savePolicy)
+                    .collect(Collectors.toList());
 
-        while (true){
-            if (erGameIdResponse.getNext() > lastGameId && erGameIdResponse.getNext() > 16700000){
-                List<GameId> gameInfos = erGameIdResponse.getUserGames();
+            gamesRepository.saveAll(gamesList);
 
-                for (GameId gameId: gameInfos) {
-                    Games game = Games.builder()
-                            .gameId(gameId.getGameId())
-                            .userNum(gameId.getUserNum())
-                            .build();
-
-                    gamesRepository.save(game);
-
-                }
-                int next = erGameIdResponse.getNext();
-                System.out.println(next);
-                erGameIdResponse = erClient.getGameId(erUserForm.getUserNum(), ErGameIdRequest.builder()
-                        .next(next)
-                        .build()
-                );
-
-            } else {
-
-                List<GameId> gameInfos = erGameIdResponse.getUserGames();
-
-                for (GameId gameId: gameInfos) {
-                    if (gameId.getGameId() == lastGameId || gameId.getGameId() < 16700000){
-                        break;
-                    } else {
-                        Games game = Games.builder()
-                                .gameId(gameId.getGameId())
-                                .userNum(gameId.getUserNum())
-                                .build();
-
-                        gamesRepository.save(game);
-                    }
-
-                }
+            if (gamesList.size() != 10) {
                 break;
             }
 
+            int oldestGameId = gamesList.get(gamesList.size() - 1).getGameId();
+            response = erClient.getGameId(erUserForm.getUserNum(), ErGameIdRequest.builder().next(oldestGameId).build());
         }
-
     }
 
     /*public String getGameInfo(GameIdMapping info){ //
@@ -141,7 +119,7 @@ public class ErService {
 
     }*/
 
-    private Optional<Games> getLastGames(String userNum){
+    private Optional<Games> getLastGames(String userNum) {
         return gamesRepository.findTopByUserNumOrderByGameIdDesc(userNum);
     }
 
