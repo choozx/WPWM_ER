@@ -1,14 +1,14 @@
 package com.wpwm.er_wpwm.repository;
 
-import com.wpwm.er_wpwm.entity.Games;
+import com.wpwm.er_wpwm.entity.GameIds;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface GamesRepository extends JpaRepository <Games, Long>{
+public interface GamesRepository extends JpaRepository <GameIds, Long>{
 
-    List<Games> findByUserNum(String userNum);
+    List<GameIds> findByUserNum(String userNum);
 
-    Optional<Games> findTopByUserNumOrderByGameIdDesc(String userNum);
+    Optional<GameIds> findTopByUserNumOrderByGameIdDesc(String userNum);
 }

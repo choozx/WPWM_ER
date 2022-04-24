@@ -11,7 +11,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Entity
 @Table(name = "Games")
-public class Games {
+public class GameIds {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +20,6 @@ public class Games {
 
     @Column(name = "gameId")
     private int gameId;
-
     @Column(name = "userNum")
     private String userNum;
 

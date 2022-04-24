@@ -2,10 +2,17 @@ package com.wpwm.er_wpwm.search;
 
 import com.wpwm.er_wpwm.dto.ErUserForm;
 import com.wpwm.er_wpwm.entity.ErUser;
-import com.wpwm.er_wpwm.entity.Games;
+import com.wpwm.er_wpwm.entity.GameIds;
+import com.wpwm.er_wpwm.entity.Player;
 import com.wpwm.er_wpwm.exception.ErrorPageException;
+import com.wpwm.er_wpwm.includeModel.UserInfo;
+import com.wpwm.er_wpwm.includeModel.GameId;
+import com.wpwm.er_wpwm.includeModel.player.PlayerInfo;
+import com.wpwm.er_wpwm.includeModel.player.element.EquipmentInfo;
+import com.wpwm.er_wpwm.includeModel.player.element.MasteryInfo;
 import com.wpwm.er_wpwm.repository.ErUserRepository;
 import com.wpwm.er_wpwm.repository.GamesRepository;
+import com.wpwm.er_wpwm.repository.PlayerRepository;
 import com.wpwm.er_wpwm.search.client.ErClient;
 import com.wpwm.er_wpwm.search.client.model.ErRequest.ErGameIdRequest;
 import com.wpwm.er_wpwm.search.client.model.ErRequest.ErUserRequest;
@@ -29,6 +36,7 @@ public class MiddleService {
 
     private final ErUserRepository erUserRepository;
     private final GamesRepository gamesRepository;
+    private final PlayerRepository playerRepository;
     private final ErClient erClient;
 
 
@@ -63,26 +71,34 @@ public class MiddleService {
         erUserRepository.save(erUser);
     }
 
-    public List<Games> getGameId(ErUser erUser) {
-        List<Games> gameIds = gamesRepository.findByUserNum(erUser.getUserNum());
-        return gameIds;
+    public List<GameId> getGameIdFromDB(UserInfo userInfo) { //entity에서 객체로 옮기는 작업
+        List<GameIds> gameIds = gamesRepository.findByUserNum(userInfo.getUserNum());
+        List<GameId> gameIdList = null;
+        for (GameIds game: gameIds) {
+            GameId gameId = GameId.builder()
+                    .userNum(game.getUserNum())
+                    .gameId(game.getGameId())
+                    .build();
+            gameIdList.add(gameId);
+        }
+        return gameIdList;
     }
 
 
-    public void saveGameId(ErUserForm erUserForm) {
+    public void saveGameIdFromClient(ErUserForm erUserForm) {
 
         erUserForm.setUserNum("1218167");
 
-        Optional<Games> lastGamesOpt = getLastGames(erUserForm.getUserNum());
+        Optional<GameIds> lastGamesOpt = getLastGames(erUserForm.getUserNum());
         int savePolicy = lastGamesOpt.isEmpty() ? 16700000 : lastGamesOpt.get().getGameId();
 
 
         ErGameIdResponse response = erClient.getGameId(erUserForm.getUserNum());
 
         while (!response.getUserGames().isEmpty()) {
-            List<Games> gamesList = response.getUserGames().stream()
+            List<GameIds> gamesList = response.getUserGames().stream()
                     .map(gameId ->
-                            Games.builder()
+                            GameIds.builder()
                                     .gameId(gameId.getGameId())
                                     .userNum(gameId.getUserNum())
                                     .build()
@@ -99,6 +115,43 @@ public class MiddleService {
             int oldestGameId = gamesList.get(gamesList.size() - 1).getGameId();
             response = erClient.getGameId(erUserForm.getUserNum(), ErGameIdRequest.builder().next(oldestGameId).build());
         }
+    }
+
+    public List<PlayerInfo> getPlayerFromDB(GameId gameId) {
+        List<PlayerInfo> playerInfoList = null;
+        List<Player> players = playerRepository.findByGameId(gameId);
+        for (Player player:players) {
+            //마스터리랑 장비 객체 불러오기
+            MasteryInfo masteryInfo = getMasteryLevel(gameId);
+            EquipmentInfo equipmentInfo = getEquipment(gameId);
+
+            PlayerInfo playerInfo = PlayerInfo.builder()
+                    .gameId(player.getGameId())
+                    .userNum(player.getUserNum())
+                    .nickname(player.getNickname())
+                    .seasonId(player.getSeasonId())
+                    .matchingMode(player.getMatchingMode())
+                    .matchingTeamMode(player.getMatchingTeamMode())
+                    .characterNum(player.getCharacterNum())
+                    .skinCode(player.getSkinCode())
+                    .characterLevel(player.getCharacterLevel())
+                    .gameRank(player.getGameRank())
+                    .playerKill(player.getPlayerKill())
+                    .playerAssistant(player.getPlayerAssistant())
+                    .monsterKill(player.getMonsterKill())
+                    .bestWeapon(player.getBestWeapon())
+                    .bestWeaponLevel(player.getBestWeaponLevel())
+                    .versionMajor(player.getVersionMajor())
+                    .versionMinor(player.getVersionMinor())
+                    .language(player.getLanguage())
+                    .masteryInfo(masteryInfo)
+                    .equipmentInfo(equipmentInfo)
+                    .build();
+
+            playerInfoList.add(playerInfo);
+        }
+
+        return playerInfoList;
     }
 
     /*public String getGameInfo(GameIdMapping info){ //
@@ -119,8 +172,18 @@ public class MiddleService {
 
     }*/
 
-    private Optional<Games> getLastGames(String userNum) {
+    private Optional<GameIds> getLastGames(String userNum) {
         return gamesRepository.findTopByUserNumOrderByGameIdDesc(userNum);
+    }
+
+    private MasteryInfo getMasteryLevel(GameId gameId) {
+
+        return ;
+    }
+
+    private EquipmentInfo getEquipment(GameId gameId) {
+
+        return ;
     }
 
 }

@@ -2,9 +2,24 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <html lang="en">
 <head>
+   <!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+
+        async function getAllInfo(){
+            try {
+                const user = await axois.get('/getUser',{
+                    params:{
+                        nickname:
+                    }
+                })
+            } catch (error){
+                console.error(error);
+            }
+        }
+    </script>-->
 </head>
 <body>
-    <form action="getUser" method="post">
+    <form action="getUser" method="get">
         <input name="nickname">
         <button type="submit">제출</button>
     </form>

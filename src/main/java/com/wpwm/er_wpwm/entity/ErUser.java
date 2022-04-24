@@ -20,7 +20,6 @@ public class ErUser {
 
     @Column(name = "userNum")
     private String userNum;
-
     @Column(name = "nickName")
     private String nickName;
 

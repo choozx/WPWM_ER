@@ -22,9 +22,9 @@ public class MasteryLevel {
     private String gameId;
     @Column(name = "userNum")
     private String userNum;
-    @Column(name = "name")
+    @Column(name = "mastery")
     @Enumerated(EnumType.STRING)
-    private MasteryType name;
+    private MasteryType mastery;
     @Column(name="level")
     private int level;
 
