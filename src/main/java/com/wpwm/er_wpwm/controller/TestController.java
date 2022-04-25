@@ -27,11 +27,16 @@ public class TestController {
         return erService.getUser(erUserForm);
     }
 
-    @PostMapping("/getGames")
+    @GetMapping("/getGames")
     public List<GameInfo> getGames(UserInfo userInfo) {
         List<GameId> gameId = erService.getGameId(userInfo);
         List<GameInfo> gameInfos = erService.getGameInfo(gameId);
         return gameInfos;
+    }
+
+    @GetMapping("/updateGames")
+    public void updateGames(UserInfo userInfo) {
+
     }
 
     /*@PostMapping("/searchGames")

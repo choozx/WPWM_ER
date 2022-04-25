@@ -41,6 +41,10 @@ public class ErService {
         return gameIds;
     }
 
+    public void saveGameId(UserInfo userInfo) {
+        middleService.saveGameIdFromClient(userInfo);
+    }
+
 
     public List<GameInfo> getGameInfo(List<GameId> gameIds) {
         List<GameInfo> gameInfos = null;
@@ -54,5 +58,11 @@ public class ErService {
             gameInfos.add(gameInfo);
         }
         return gameInfos;
+    }
+
+    public void saveGameInfo(List<GameId> gameIds) {
+        for (GameId gameId : gameIds) {
+          middleService.saveGameInfoFromClient(gameId);
+        }
     }
 }

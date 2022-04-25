@@ -3,6 +3,7 @@ package com.wpwm.er_wpwm.search;
 import com.wpwm.er_wpwm.dto.ErUserForm;
 import com.wpwm.er_wpwm.entity.ErUser;
 import com.wpwm.er_wpwm.entity.GameIds;
+import com.wpwm.er_wpwm.entity.MasteryLevel;
 import com.wpwm.er_wpwm.entity.Player;
 import com.wpwm.er_wpwm.exception.ErrorPageException;
 import com.wpwm.er_wpwm.includeModel.UserInfo;
@@ -12,6 +13,7 @@ import com.wpwm.er_wpwm.includeModel.player.element.EquipmentInfo;
 import com.wpwm.er_wpwm.includeModel.player.element.MasteryInfo;
 import com.wpwm.er_wpwm.repository.ErUserRepository;
 import com.wpwm.er_wpwm.repository.GamesRepository;
+import com.wpwm.er_wpwm.repository.MasteryRepository;
 import com.wpwm.er_wpwm.repository.PlayerRepository;
 import com.wpwm.er_wpwm.search.client.ErClient;
 import com.wpwm.er_wpwm.search.client.model.ErRequest.ErGameIdRequest;
@@ -37,6 +39,7 @@ public class MiddleService {
     private final ErUserRepository erUserRepository;
     private final GamesRepository gamesRepository;
     private final PlayerRepository playerRepository;
+    private final MasteryRepository masteryRepository;
     private final ErClient erClient;
 
 
@@ -85,15 +88,16 @@ public class MiddleService {
     }
 
 
-    public void saveGameIdFromClient(ErUserForm erUserForm) {
+    public List<GameId> saveGameIdFromClient(UserInfo userInfo) {
 
-        erUserForm.setUserNum("1218167");
+        userInfo.setUserNum("1218167");
 
-        Optional<GameIds> lastGamesOpt = getLastGames(erUserForm.getUserNum());
+        List<GameId> newGameId = null;
+        Optional<GameIds> lastGamesOpt = getLastGames(userInfo.getUserNum());
         int savePolicy = lastGamesOpt.isEmpty() ? 16700000 : lastGamesOpt.get().getGameId();
 
 
-        ErGameIdResponse response = erClient.getGameId(erUserForm.getUserNum());
+        ErGameIdResponse response = erClient.getGameId(userInfo.getUserNum());
 
         while (!response.getUserGames().isEmpty()) {
             List<GameIds> gamesList = response.getUserGames().stream()
@@ -106,6 +110,7 @@ public class MiddleService {
                     .filter(gameId -> gameId.getGameId() > savePolicy)
                     .collect(Collectors.toList());
 
+            newGameId.addAll();
             gamesRepository.saveAll(gamesList);
 
             if (gamesList.size() != 10) {
@@ -113,13 +118,17 @@ public class MiddleService {
             }
 
             int oldestGameId = gamesList.get(gamesList.size() - 1).getGameId();
-            response = erClient.getGameId(erUserForm.getUserNum(), ErGameIdRequest.builder().next(oldestGameId).build());
+            response = erClient.getGameId(userInfo.getUserNum(), ErGameIdRequest.builder().next(oldestGameId).build());
         }
+    }
+
+    public void saveGameInfoFromClient(GameId gameId) {
+
     }
 
     public List<PlayerInfo> getPlayerFromDB(GameId gameId) {
         List<PlayerInfo> playerInfoList = null;
-        List<Player> players = playerRepository.findByGameId(gameId);
+        List<Player> players = playerRepository.findByGameId(gameId.getGameId());
         for (Player player:players) {
             //마스터리랑 장비 객체 불러오기
             MasteryInfo masteryInfo = getMasteryLevel(gameId);
@@ -154,6 +163,10 @@ public class MiddleService {
         return playerInfoList;
     }
 
+    public void savePlayerFromClient(GameId gameId){
+
+    }
+
     /*public String getGameInfo(GameIdMapping info){ //
         List<GameIdMapping> gameIds = gamesRepository.findAll(erUser.getUserNum());
         return gameIds;
@@ -177,6 +190,7 @@ public class MiddleService {
     }
 
     private MasteryInfo getMasteryLevel(GameId gameId) {
+        List<MasteryLevel> masteryLevels = masteryRepository.findByGameIdAndUserNum(gameId.getGameId(), gameId.getUserNum());
 
         return ;
     }

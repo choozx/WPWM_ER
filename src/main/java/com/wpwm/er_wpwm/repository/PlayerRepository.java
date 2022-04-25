@@ -10,5 +10,5 @@ import java.util.Optional;
 
 public interface PlayerRepository extends JpaRepository <Player, Long>{
 
-    List<Player> findByGameId(GameId gameId);
+    List<Player> findByGameId(int gameId);
 }
