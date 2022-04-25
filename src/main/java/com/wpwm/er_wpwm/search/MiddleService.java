@@ -110,7 +110,17 @@ public class MiddleService {
                     .filter(gameId -> gameId.getGameId() > savePolicy)
                     .collect(Collectors.toList());
 
-            newGameId.addAll();
+            newGameId.addAll(
+                    response.getUserGames().stream()
+                            .map(gameId ->
+                                    GameId.builder()
+                                            .gameId(gameId.getGameId())
+                                            .userNum(gameId.getUserNum())
+                                            .build()
+                            )
+                            .filter(gameId -> gameId.getGameId() > savePolicy)
+                            .collect(Collectors.toList())
+            );
             gamesRepository.saveAll(gamesList);
 
             if (gamesList.size() != 10) {
@@ -120,6 +130,7 @@ public class MiddleService {
             int oldestGameId = gamesList.get(gamesList.size() - 1).getGameId();
             response = erClient.getGameId(userInfo.getUserNum(), ErGameIdRequest.builder().next(oldestGameId).build());
         }
+        return newGameId;
     }
 
     public void saveGameInfoFromClient(GameId gameId) {
