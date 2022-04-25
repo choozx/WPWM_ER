@@ -29,14 +29,21 @@ public class TestController {
 
     @GetMapping("/getGames")
     public List<GameInfo> getGames(UserInfo userInfo) {
-        List<GameId> gameId = erService.getGameId(userInfo);
-        List<GameInfo> gameInfos = erService.getGameInfo(gameId);
+        List<GameId> gameIds = erService.getGameId(userInfo);
+        List<GameInfo> gameInfos = erService.getGameInfo(gameIds);
         return gameInfos;
     }
 
-    @GetMapping("/updateGames")
+    @PostMapping("/updateGames")
     public void updateGames(UserInfo userInfo) {
+        //List<GameId> gameIds = erService.saveGameId(userInfo);
 
+        erService.saveGameInfo(List.of(
+                GameId.builder()
+                        .gameId(16692574)
+                        .userNum("1218167")
+                        .build()
+        ));
     }
 
     /*@PostMapping("/searchGames")

@@ -41,8 +41,12 @@ public class ErService {
         return gameIds;
     }
 
-    public void saveGameId(UserInfo userInfo) {
-        middleService.saveGameIdFromClient(userInfo);
+    public List<GameId> saveGameId(UserInfo userInfo) {
+        UserInfo userInfoTest = UserInfo.builder()
+                .nickName("쌍문동곡갱이")
+                .userNum("1218167")
+                .build();
+        return middleService.saveGameIdFromClient(userInfoTest);
     }
 
 

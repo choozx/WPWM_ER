@@ -2,6 +2,8 @@ package com.wpwm.er_wpwm.search.client;
 
 import com.wpwm.er_wpwm.client.Client;
 import com.wpwm.er_wpwm.client.util.QueryParamsConverter;
+import com.wpwm.er_wpwm.search.client.model.ErRequest;
+import com.wpwm.er_wpwm.search.client.model.ErRequest.ErGameInfoRequest;
 import com.wpwm.er_wpwm.search.client.model.ErRequest.ErGameIdRequest;
 import com.wpwm.er_wpwm.search.client.model.ErRequest.ErUserRequest;
 import com.wpwm.er_wpwm.search.client.model.ErResponse.ErGameInfoResponse;
@@ -37,9 +39,9 @@ public class ErClient extends Client {
         return get("v1/user/games/" + userNum, request, ErGameIdResponse.class, makeHeaders());
     }
 
-    public ErGameInfoResponse getGameInfo(ErGameIdRequest request){
+    public ErGameInfoResponse getGameInfo(String gameId){
         sleep();
-        return get("v1/user/games/", ErGameInfoResponse.class, makeHeaders());
+        return get("v1/games/" + gameId, ErGameInfoResponse.class, makeHeaders());
     }
 
     private HttpHeaders makeHeaders() {
