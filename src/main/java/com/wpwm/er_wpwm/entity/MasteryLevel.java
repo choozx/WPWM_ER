@@ -1,6 +1,6 @@
 package com.wpwm.er_wpwm.entity;
 
-import com.wpwm.er_wpwm.type.MasteryType;
+import com.wpwm.er_wpwm.code.MasteryCode;
 import lombok.*;
 
 import javax.persistence.*;
@@ -24,7 +24,7 @@ public class MasteryLevel {
     private String userNum;
     @Column(name = "mastery")
     @Enumerated(EnumType.STRING)
-    private MasteryType mastery;
+    private MasteryCode mastery;
     @Column(name="level")
     private int level;
 

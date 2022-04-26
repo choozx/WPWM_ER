@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -44,7 +45,7 @@ public class ErService {
 
 
     public List<GameInfo> getGameInfo(List<GameId> gameIds) {
-        List<GameInfo> gameInfos = null;
+        List<GameInfo> gameInfos = new ArrayList<>();
         for (GameId gameId: gameIds) {
             List<PlayerInfo> playerInfos = middleService.getPlayerFromDB(gameId);
             GameInfo gameInfo = GameInfo.builder()

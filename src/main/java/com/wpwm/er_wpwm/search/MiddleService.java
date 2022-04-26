@@ -18,7 +18,7 @@ import com.wpwm.er_wpwm.search.client.model.ErResponse.ErGameInfoResponse.Partic
 import com.wpwm.er_wpwm.search.client.model.ErResponse.ErGameIdResponse;
 import com.wpwm.er_wpwm.search.client.model.ErResponse.ErUserResponse;
 import com.wpwm.er_wpwm.search.client.model.ErResponse.ErUserResponse.ErUserResponseInfo;
-import com.wpwm.er_wpwm.type.MasteryType;
+import com.wpwm.er_wpwm.code.MasteryCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -178,7 +178,7 @@ public class MiddleService {
             List<MasteryLevel> masteryLevelEntity = new ArrayList<>();
             Map<String, String> masteryLevelMap = objectMapper.convertValue(masteryLevel, Map.class);
             for (Map.Entry<String, String> entry : masteryLevelMap.entrySet()) {
-                MasteryType masteryType = MasteryType.of(Integer.parseInt(entry.getKey()));
+                MasteryCode masteryType = MasteryCode.of(Integer.parseInt(entry.getKey()));
                 int level = Integer.parseInt(entry.getValue());
 
                 masteryLevelEntity.add(MasteryLevel.builder()

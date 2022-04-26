@@ -1,6 +1,5 @@
 package com.wpwm.er_wpwm.entity;
 
-import com.wpwm.er_wpwm.type.EquipmentType;
 import lombok.*;
 
 import javax.persistence.*;

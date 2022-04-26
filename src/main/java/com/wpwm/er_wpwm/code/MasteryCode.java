@@ -1,11 +1,11 @@
-package com.wpwm.er_wpwm.type;
+package com.wpwm.er_wpwm.code;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum MasteryType {
+public enum MasteryCode {
 
 
     GLOVE(1),
@@ -43,8 +43,8 @@ public enum MasteryType {
 
     private int code;
 
-    public static MasteryType of(int code){
-        for (MasteryType value : MasteryType.values()) {
+    public static MasteryCode of(int code){
+        for (MasteryCode value : MasteryCode.values()) {
             if(value.getCode()==code){
                 return value;
             }

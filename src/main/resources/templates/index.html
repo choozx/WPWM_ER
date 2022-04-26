@@ -1,27 +1,24 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html>
 <html lang="en">
 <head>
-   <!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script>
-
-        async function getAllInfo(){
-            try {
-                const user = await axois.get('/getUser',{
-                    params:{
-                        nickname:
-                    }
-                })
-            } catch (error){
-                console.error(error);
-            }
-        }
-    </script>-->
 </head>
 <body>
-    <form action="getUser" method="get">
-        <input name="nickname">
-        <button type="submit">제출</button>
-    </form>
+
+<form action="/main" method="get">
+    <input name="nickname">
+    <button type="submit">제출</button>
+</form>
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script type="text/javascript"></script>
+<script>
+
+    async function getUser() {
+        let response = await axios.get("/getUser");
+        console.log(response);
+        document.querySelector("#list").innerHTML += response.data + '<br>';
+    }
+</script>
 </body>
 </html>

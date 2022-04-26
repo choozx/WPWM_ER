@@ -1,11 +1,11 @@
-package com.wpwm.er_wpwm.type;
+package com.wpwm.er_wpwm.code;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum EquipmentType {
+public enum EquipmentCode {
 
     WEAPON(0),
     CHEST(1),
@@ -18,8 +18,8 @@ public enum EquipmentType {
 
     private int code;
 
-    public static EquipmentType of(int code){
-        for (EquipmentType value : EquipmentType.values()) {
+    public static EquipmentCode of(int code){
+        for (EquipmentCode value : EquipmentCode.values()) {
             if(value.getCode()==code){
                 return value;
             }
