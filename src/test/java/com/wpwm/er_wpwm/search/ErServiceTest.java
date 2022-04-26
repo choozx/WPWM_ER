@@ -19,7 +19,7 @@ class ErServiceTest {
                 .gameId(16692574)
                 .userNum(null)
                 .build();
-        middleService.saveGameInfoFromClient(gameId);
+        middleService.savePlayerFromClient(gameId);
     }
 
 }

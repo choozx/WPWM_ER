@@ -6,9 +6,6 @@ import com.wpwm.er_wpwm.includeModel.GameId;
 import com.wpwm.er_wpwm.includeModel.GameInfo;
 import com.wpwm.er_wpwm.includeModel.UserInfo;
 import com.wpwm.er_wpwm.includeModel.player.PlayerInfo;
-import com.wpwm.er_wpwm.repository.ErUserRepository;
-import com.wpwm.er_wpwm.repository.GamesRepository;
-import com.wpwm.er_wpwm.search.client.ErClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -62,7 +59,9 @@ public class ErService {
 
     public void saveGameInfo(List<GameId> gameIds) {
         for (GameId gameId : gameIds) {
-          middleService.saveGameInfoFromClient(gameId);
+            if (middleService.getPlayerFromDB(gameId).isEmpty()){
+                middleService.savePlayerFromClient(gameId);
+            }
         }
     }
 }

@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface EquipmentRepository extends JpaRepository <Equipment, Long>{
 
-
+    Equipment findByGameIdAndUserNum(int gameId, String userNum);
 }

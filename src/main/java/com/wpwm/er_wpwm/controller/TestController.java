@@ -40,30 +40,8 @@ public class TestController {
                 .userNum("1218167")
                 .build();
         List<GameId> gameIds = erService.saveGameId(userInfoTest);
-        erService.saveGameInfo(gameIds);    //위에서 받아오는 gameId중 gameInfo에 저장되어있는 gameId가 있다면 그것은 걸러서 조회 안함
+        erService.saveGameInfo(gameIds);    //위에서 받아오는 gameId중 gameInfo에 저장되어있는 gameId가 있다면 그것은 걸러서 조회 안함 erServie에 로직 추가해야됨
     }
 
-    /*@PostMapping("/searchGames")
-    public String searchGames(ErUserForm erUserForm) {
-
-        ErUser erUser = null;
-        if (erService.getUser(erUserForm).isEmpty()) {
-            erService.saveNickname(erUserForm);
-        }
-        //erUser = erService.getNickname(erUserForm).get();
-
-        List<Games> gameIds = erService.getGameId(erUser);
-
-        mv.addObject("aaa", null);
-
-        //저장된 userNum으로 매치 찾기
-        return "";
-    }*/
-
-    /*@PostMapping("/updateGames")
-    public String updateGames(ErUserForm erUserForm) {
-        erService.saveGameId(erUserForm);
-        return "";
-    }*/
 
 }

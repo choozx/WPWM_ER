@@ -11,7 +11,6 @@ import com.wpwm.er_wpwm.includeModel.player.element.EquipmentInfo;
 import com.wpwm.er_wpwm.includeModel.player.element.MasteryInfo;
 import com.wpwm.er_wpwm.repository.*;
 import com.wpwm.er_wpwm.search.client.ErClient;
-import com.wpwm.er_wpwm.search.client.model.ErRequest.ErGameInfoRequest;
 import com.wpwm.er_wpwm.search.client.model.ErRequest.ErGameIdRequest;
 import com.wpwm.er_wpwm.search.client.model.ErRequest.ErUserRequest;
 import com.wpwm.er_wpwm.search.client.model.ErResponse.ErGameInfoResponse;
@@ -26,10 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriUtils;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -91,7 +87,6 @@ public class MiddleService {
         return gameIdList;
     }
 
-
     public List<GameId> saveGameIdFromClient(UserInfo userInfo) {
 
 
@@ -139,7 +134,7 @@ public class MiddleService {
         return newGameId;
     }
 
-    public void saveGameInfoFromClient(GameId gameId) {
+    public void savePlayerFromClient(GameId gameId) {
 
         ErGameInfoResponse response = erClient.getGameInfo(gameId.getGameId());
         for (Participant participant: response.getUserGames()) {
@@ -202,12 +197,13 @@ public class MiddleService {
     }
 
     public List<PlayerInfo> getPlayerFromDB(GameId gameId) {
-        List<PlayerInfo> playerInfoList = null;
+        List<PlayerInfo> playerInfoList = new ArrayList<>();
         List<Player> players = playerRepository.findByGameId(gameId.getGameId());
+
         for (Player player:players) {
             //마스터리랑 장비 객체 불러오기
-//            MasteryInfo masteryInfo = getMasteryLevel(gameId);
-//            EquipmentInfo equipmentInfo = getEquipment(gameId);
+            MasteryInfo masteryInfo = getMasteryLevel(gameId);
+            EquipmentInfo equipmentInfo = getEquipment(gameId);
 
             PlayerInfo playerInfo = PlayerInfo.builder()
                     .gameId(player.getGameId())
@@ -228,8 +224,8 @@ public class MiddleService {
                     .versionMajor(player.getVersionMajor())
                     .versionMinor(player.getVersionMinor())
                     .language(player.getLanguage())
-//                    .masteryInfo(masteryInfo)
-//                    .equipmentInfo(equipmentInfo)
+                    .masteryInfo(masteryInfo)
+                    .equipmentInfo(equipmentInfo)
                     .build();
 
             playerInfoList.add(playerInfo);
@@ -238,41 +234,36 @@ public class MiddleService {
         return playerInfoList;
     }
 
-    public void savePlayerFromClient(GameId gameId){
-
-    }
-
-//    public String getGameInfo(GameIdMapping info){ //
-//        List<GameIdMapping> gameIds = gamesRepository.findAll(erUser.getUserNum());
-//        return gameIds;
-//    }
-
-    /*public void saveGameInfo(String GameId){
-
-        ErGameInfoRequest request = ErGameInfoRequest.builder()
-                .gameId("16692574")
-                .build();
-
-        ErGameInfoResponse erGameInfoResponse = null;
-        erGameInfoResponse = erClient.getGameId(request);
-
-        List<player> gameInfo = erGameInfoResponse.getPlayers();
-
-    }*/
 
     private Optional<GameIds> getLastGames(String userNum) {
         return gamesRepository.findTopByUserNumOrderByGameIdDesc(userNum);
     }
 
-    /*private MasteryInfo getMasteryLevel(GameId gameId) {
+    private MasteryInfo getMasteryLevel(GameId gameId) {
         List<MasteryLevel> masteryLevels = masteryRepository.findByGameIdAndUserNum(gameId.getGameId(), gameId.getUserNum());
+        HashMap<String, Integer> masteryMap = new HashMap<>();
+        for (MasteryLevel masteryLevel : masteryLevels) {
+            masteryMap.put(masteryLevel.getMastery().name(), masteryLevel.getLevel());
+        }
 
-        return ;
+        MasteryInfo masteryInfo = MasteryInfo.builder()
+                .masteryMap(masteryMap)
+                .build();
+
+        return masteryInfo;
     }
 
     private EquipmentInfo getEquipment(GameId gameId) {
-
-        return ;
-    }*/
+        Equipment equipment = equipmentRepository.findByGameIdAndUserNum(gameId.getGameId(), gameId.getUserNum());
+        EquipmentInfo equipmentInfo = EquipmentInfo.builder()
+                .weapon(equipment.getWeapon())
+                .chest(equipment.getChest())
+                .head(equipment.getHead())
+                .arm(equipment.getArm())
+                .leg(equipment.getLeg())
+                .accessory(equipment.getAccessory())
+                .build();
+        return equipmentInfo;
+    }
 
 }

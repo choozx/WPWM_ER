@@ -5,13 +5,17 @@ import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.Column;
+import java.util.HashMap;
 import java.util.List;
 
 @AllArgsConstructor
 @Data
 @Builder
 public class MasteryInfo {
-    private String gloveMastery;
+
+    private HashMap<String, Integer> masteryMap;
+
+    /*private String gloveMastery;
     private String tonfaMastery;
     private String batMastery;
     private String whipMastery;
@@ -42,5 +46,5 @@ public class MasteryInfo {
     private String moveMastery;
     private String healthMastery;
     private String defenseMastery;
-    private String huntMastery;
+    private String huntMastery;*/
 }
