@@ -23,7 +23,7 @@ public class Player {
     @Column(name="nickname")
     private String nickname;
     @Column(name="gameId")
-    private String gameId;
+    private int gameId;
     @Column(name="seasonId")
     private String seasonId;
     @Column(name="matchingMode")

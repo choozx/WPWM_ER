@@ -65,7 +65,7 @@ public class ErResponse {
             @JsonProperty("nickname")
             private String nickname;
             @JsonProperty("gameId")
-            private String gameId;
+            private int gameId;
             @JsonProperty("seasonId")
             private String seasonId;
             @JsonProperty("matchingMode")

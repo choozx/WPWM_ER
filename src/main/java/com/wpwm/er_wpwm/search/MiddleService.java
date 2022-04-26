@@ -76,7 +76,7 @@ public class MiddleService {
 
     public List<GameId> getGameIdFromDB(UserInfo userInfo) { //entity에서 객체로 옮기는 작업
         List<GameIds> gameIds = gamesRepository.findByUserNum(userInfo.getUserNum());
-        List<GameId> gameIdList = null;
+        List<GameId> gameIdList = new ArrayList<>();
         for (GameIds game: gameIds) {
             GameId gameId = GameId.builder()
                     .userNum(game.getUserNum())
@@ -118,7 +118,6 @@ public class MiddleService {
                             .filter(gameId -> gameId.getGameId() > savePolicy)
                             .collect(Collectors.toList());
 
-            System.out.println(gameIds.toString());
             newGameId.addAll(gameIds);
             System.out.println(newGameId.toString());
             gamesRepository.saveAll(gamesList);

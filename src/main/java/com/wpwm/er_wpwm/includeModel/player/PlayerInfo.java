@@ -15,7 +15,7 @@ public class PlayerInfo {
 
     private String userNum;
     private String nickname;
-    private String gameId;
+    private int gameId;
     private String seasonId;
     private String matchingMode;
     private String matchingTeamMode;
