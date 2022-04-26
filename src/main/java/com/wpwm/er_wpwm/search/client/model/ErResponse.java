@@ -112,7 +112,8 @@ public class ErResponse {
 
             }
 
-
+            @ToString
+            @Getter
             public static class Equipment {
                 @JsonProperty("0")
                 private String weapon;

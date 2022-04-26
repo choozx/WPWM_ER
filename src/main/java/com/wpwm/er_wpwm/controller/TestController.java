@@ -6,7 +6,6 @@ import com.wpwm.er_wpwm.includeModel.GameInfo;
 import com.wpwm.er_wpwm.includeModel.UserInfo;
 import com.wpwm.er_wpwm.search.ErService;
 import lombok.extern.slf4j.Slf4j;
-import org.h2.engine.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,14 +35,12 @@ public class TestController {
 
     @PostMapping("/updateGames")
     public void updateGames(UserInfo userInfo) {
-        //List<GameId> gameIds = erService.saveGameId(userInfo);
-
-        erService.saveGameInfo(List.of(
-                GameId.builder()
-                        .gameId(16692574)
-                        .userNum("1218167")
-                        .build()
-        ));
+        UserInfo userInfoTest = UserInfo.builder()
+                .nickName("쌍문동곡갱이")
+                .userNum("1218167")
+                .build();
+        List<GameId> gameIds = erService.saveGameId(userInfoTest);
+        erService.saveGameInfo(gameIds);    //위에서 받아오는 gameId중 gameInfo에 저장되어있는 gameId가 있다면 그것은 걸러서 조회 안함
     }
 
     /*@PostMapping("/searchGames")

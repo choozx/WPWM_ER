@@ -39,7 +39,7 @@ public class ErClient extends Client {
         return get("v1/user/games/" + userNum, request, ErGameIdResponse.class, makeHeaders());
     }
 
-    public ErGameInfoResponse getGameInfo(String gameId){
+    public ErGameInfoResponse getGameInfo(int gameId){
         sleep();
         return get("v1/games/" + gameId, ErGameInfoResponse.class, makeHeaders());
     }
