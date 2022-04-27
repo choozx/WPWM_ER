@@ -8,6 +8,12 @@
 <input type="hidden" id="nickName" value="">
 <input type="hidden" id="userNum" value="">
 
+<div>
+    <div id="playerNickname">
+
+    </div>
+</div>
+
 <button id="update" onclick="update()">전적갱신</button>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script type="text/javascript"></script>
@@ -18,23 +24,33 @@
     let nickname1 = param.get('nickname');
 
     window.onload = async function getUser() {
+
+
         let userResponse = await axios.get("/getUser?nickname=" + nickname1);
         console.log(userResponse);
         let nickName = userResponse.data.nickName;
         let userNum = userResponse.data.userNum;
 
         document.querySelector("#nickName").value = nickName;
-        document.getElementById('nickName').value = nickName;
         document.querySelector("#userNum").value = userNum;
 
         let gameInfoResponse = await axios.get("/getGames?nickName=" + nickName + "&userNum=" + userNum);
         console.log(gameInfoResponse);
 
+        let gameList = gameInfoResponse.data;
+        gameList.forEach(function (element){
+            let playerInfos = element.playerInfos;
+
+            playerInfos.forEach(function (player){
+                document.querySelector("#playerNickname").innerHTML += player.nickname + <br>;
+            });
+        });
+
     }
 
     async function update() {
-        let nickname = "쌍문동곡갱이";
-        let userNum = "1218167";
+        let nickname = document.querySelector("#nickName").value;
+        let userNum = document.querySelector("#userNum").value;
         let userResponse = await axios.post("/updateGames?nickname=" + nickname + "&userNum=" + userNum);
     }
 

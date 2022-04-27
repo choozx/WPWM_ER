@@ -92,7 +92,7 @@ public class MiddleService {
 
         List<GameId> newGameId = new ArrayList<GameId>();
         Optional<GameIds> lastGamesOpt = getLastGames(userInfo.getUserNum());
-        int savePolicy = lastGamesOpt.isEmpty() ? 16700000 : lastGamesOpt.get().getGameId();
+        int savePolicy = lastGamesOpt.isEmpty() ? 16750000 : lastGamesOpt.get().getGameId();
 
 
         ErGameIdResponse response = erClient.getGameId(userInfo.getUserNum());
