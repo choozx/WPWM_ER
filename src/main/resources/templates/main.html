@@ -8,10 +8,8 @@
 <input type="hidden" id="nickName" value="">
 <input type="hidden" id="userNum" value="">
 
-<div>
-    <div id="playerNickname">
+<div id="allGameInfo">
 
-    </div>
 </div>
 
 <button id="update" onclick="update()">전적갱신</button>
@@ -25,7 +23,6 @@
 
     window.onload = async function getUser() {
 
-
         let userResponse = await axios.get("/getUser?nickname=" + nickname1);
         console.log(userResponse);
         let nickName = userResponse.data.nickName;
@@ -38,12 +35,26 @@
         console.log(gameInfoResponse);
 
         let gameList = gameInfoResponse.data;
-        gameList.forEach(function (element){
-            let playerInfos = element.playerInfos;
+        gameList.forEach(function (element, gameNum){
 
-            playerInfos.forEach(function (player){
-                document.querySelector("#playerNickname").innerHTML += player.nickname + <br>;
+            let newDiv = document.createElement('div');
+            newDiv.className = 'gameInfoClass';
+            newDiv.id = 'gameInfoId' + gameNum;
+            document.querySelector("#allGameInfo").appendChild(newDiv);
+            document.querySelector(".gameInfoClass").style.borderWidth = "1px";
+
+            let playerInfos = element.playerInfos;
+            playerInfos.forEach(function (player,playerNum){
+
+                let newDiv = document.createElement('div');
+                newDiv.className = 'playerInfoClass';
+                newDiv.id = 'player' + playerNum;
+                document.querySelector("#gameInfoId" + gameNum).appendChild(newDiv);
+
+                document.querySelector("#player" + playerNum).innerHTML = player.nickname;  //id지정자를 생각좀 해봐야 할듯. ) player0,player1...이게 계속 겹침
+                document.querySelector("#player" + playerNum).innerHTML = player.characterNum;
             });
+
         });
 
     }

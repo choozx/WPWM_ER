@@ -35,11 +35,7 @@ public class TestController {
 
     @PostMapping("/updateGames")
     public void updateGames(UserInfo userInfo) {
-        UserInfo userInfoTest = UserInfo.builder()
-                .nickName("쌍문동곡갱이")
-                .userNum("1218167")
-                .build();
-        List<GameId> gameIds = erService.saveGameId(userInfoTest);
+        List<GameId> gameIds = erService.saveGameId(userInfo);
         erService.saveGameInfo(gameIds);    //위에서 받아오는 gameId중 gameInfo에 저장되어있는 gameId가 있다면 그것은 걸러서 조회 안함 erServie에 로직 추가해야됨
     }
 
