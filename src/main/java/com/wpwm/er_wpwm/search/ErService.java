@@ -2,125 +2,67 @@ package com.wpwm.er_wpwm.search;
 
 import com.wpwm.er_wpwm.dto.ErUserForm;
 import com.wpwm.er_wpwm.entity.ErUser;
-import com.wpwm.er_wpwm.entity.Games;
-import com.wpwm.er_wpwm.exception.ErrorPageException;
-import com.wpwm.er_wpwm.repository.ErUserRepository;
-import com.wpwm.er_wpwm.repository.GamesRepository;
-import com.wpwm.er_wpwm.search.service.ErClient;
-import com.wpwm.er_wpwm.search.service.model.ErRequest.ErGameIdRequest;
-import com.wpwm.er_wpwm.search.service.model.ErRequest.ErUserRequest;
-import com.wpwm.er_wpwm.search.service.model.ErResponse.ErGameIdResponse;
-import com.wpwm.er_wpwm.search.service.model.ErResponse.ErUserResponse;
-import com.wpwm.er_wpwm.search.service.model.ErResponse.ErUserResponse.ErUserResponseInfo;
+import com.wpwm.er_wpwm.includeModel.GameId;
+import com.wpwm.er_wpwm.includeModel.GameInfo;
+import com.wpwm.er_wpwm.includeModel.UserInfo;
+import com.wpwm.er_wpwm.includeModel.player.PlayerInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.util.UriUtils;
 
-import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class ErService {
 
-    private final ErUserRepository erUserRepository;
-    private final GamesRepository gamesRepository;
-    private final ErClient erClient;
+    private final MiddleService middleService;
 
 
-    public Optional<ErUser> getNickname(ErUserForm erUserForm) {
-        Optional<ErUser> erUserOptional = erUserRepository.findByNickname(erUserForm.getNickname());
-        return erUserOptional;
+    public UserInfo getUser(ErUserForm erUserForm){
 
-    }
-
-    public void saveNickname(ErUserForm erUserForm) {
-
-        String name = UriUtils.encodeQueryParam(erUserForm.getNickname(), StandardCharsets.UTF_8.toString());
-        ErUserRequest request = ErUserRequest.builder()
-                .query(name)
-                .build();
-
-        ErUserResponse erUserResponse = null;
-        try {
-            erUserResponse = erClient.getUser(request);
-        } catch (Exception e) {
-            throw new ErrorPageException("user guide page");
+        if (middleService.getUserFromDB(erUserForm).isEmpty()) {
+            middleService.saveUserFromClient(erUserForm);
         }
-        ErUserResponseInfo erUserResponseInfo = erUserResponse.getUser();
-
-        log.info("{}", erUserResponse);
-
-        ErUser erUser = ErUser.builder()
-                .userNum(erUserResponseInfo.getUserNum())
-                .nickname(erUserResponseInfo.getNickname())
+        ErUser erUser = middleService.getUserFromDB(erUserForm).get();
+        UserInfo userInfo = UserInfo.builder()
+                .userNum(erUser.getUserNum())
+                .nickName(erUser.getNickName())
                 .build();
-
-        erUserRepository.save(erUser);
+        return userInfo;
     }
 
-    public List<Games> getGameId(ErUser erUser) {
-        List<Games> gameIds = gamesRepository.findByUserNum(erUser.getUserNum());
+    public List<GameId> getGameId(UserInfo userInfo) {
+        List<GameId> gameIds = middleService.getGameIdFromDB(userInfo);
         return gameIds;
     }
 
-
-    public void saveGameId(ErUserForm erUserForm) {
-
-        erUserForm.setUserNum("1218167");
-
-        Optional<Games> lastGamesOpt = getLastGames(erUserForm.getUserNum());
-        int savePolicy = lastGamesOpt.isEmpty() ? 16700000 : lastGamesOpt.get().getGameId();
+    public List<GameId> saveGameId(UserInfo userInfo) {
+        return middleService.saveGameIdFromClient(userInfo);
+    }
 
 
-        ErGameIdResponse response = erClient.getGameId(erUserForm.getUserNum());
+    public List<GameInfo> getGameInfo(List<GameId> gameIds) {
+        List<GameInfo> gameInfos = new ArrayList<>();
+        for (GameId gameId: gameIds) {
+            List<PlayerInfo> playerInfos = middleService.getPlayerFromDB(gameId);
+            GameInfo gameInfo = GameInfo.builder()
+                    .gameId(gameId.getGameId())
+                    .playerInfos(playerInfos)
+                    .build();
 
-        while (!response.getUserGames().isEmpty()) {
-            List<Games> gamesList = response.getUserGames().stream()
-                    .map(gameId ->
-                            Games.builder()
-                                    .gameId(gameId.getGameId())
-                                    .userNum(gameId.getUserNum())
-                                    .build()
-                    )
-                    .filter(gameId -> gameId.getGameId() > savePolicy)
-                    .collect(Collectors.toList());
+            gameInfos.add(gameInfo);
+        }
+        return gameInfos;
+    }
 
-            gamesRepository.saveAll(gamesList);
-
-            if (gamesList.size() != 10) {
-                break;
+    public void saveGameInfo(List<GameId> gameIds) {
+        for (GameId gameId : gameIds) {
+            if (middleService.getPlayerFromDB(gameId).isEmpty()){
+                middleService.savePlayerFromClient(gameId);
             }
-
-            int oldestGameId = gamesList.get(gamesList.size() - 1).getGameId();
-            response = erClient.getGameId(erUserForm.getUserNum(), ErGameIdRequest.builder().next(oldestGameId).build());
         }
     }
-
-    /*public String getGameInfo(GameIdMapping info){ //
-        List<GameIdMapping> gameIds = gamesRepository.findAll(erUser.getUserNum());
-        return gameIds;
-    }*/
-
-    /*public void saveGameInfo(String GameId){
-
-        ErGameInfoRequest request = ErGameInfoRequest.builder()
-                .gameId("16692574")
-                .build();
-
-        ErGameInfoResponse erGameInfoResponse = null;
-        erGameInfoResponse = erClient.getGameId(request);
-
-        List<player> gameInfo = erGameInfoResponse.getPlayers();
-
-    }*/
-
-    private Optional<Games> getLastGames(String userNum) {
-        return gamesRepository.findTopByUserNumOrderByGameIdDesc(userNum);
-    }
-
 }

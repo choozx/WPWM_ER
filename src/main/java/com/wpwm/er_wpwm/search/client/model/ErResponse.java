@@ -1,5 +1,6 @@
-package com.wpwm.er_wpwm.search.service.model;
+package com.wpwm.er_wpwm.search.client.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.ToString;
@@ -53,18 +54,18 @@ public class ErResponse {
     public static class ErGameInfoResponse{
         private int code;
         private String message;
-        private List<player> players;
+        private List<Participant> userGames;
 
         @ToString
         @Getter
-        public static class player {
+        public static class Participant {
 
             @JsonProperty("userNum")
             private String userNum;
             @JsonProperty("nickname")
             private String nickname;
             @JsonProperty("gameId")
-            private String gameId;
+            private int gameId;
             @JsonProperty("seasonId")
             private String seasonId;
             @JsonProperty("matchingMode")
@@ -111,7 +112,8 @@ public class ErResponse {
 
             }
 
-
+            @ToString
+            @Getter
             public static class Equipment {
                 @JsonProperty("0")
                 private String weapon;
@@ -129,6 +131,9 @@ public class ErResponse {
 
             }
 
+            @ToString
+            @Getter
+            @JsonInclude(JsonInclude.Include.NON_NULL)
             public static class MasteryLevel {
 
                 @JsonProperty("1")

@@ -1,14 +1,14 @@
-package com.wpwm.er_wpwm.search.service;
+package com.wpwm.er_wpwm.search.client;
 
 import com.wpwm.er_wpwm.client.Client;
 import com.wpwm.er_wpwm.client.util.QueryParamsConverter;
-import com.wpwm.er_wpwm.search.service.model.ErRequest;
-import com.wpwm.er_wpwm.search.service.model.ErRequest.ErGameIdRequest;
-import com.wpwm.er_wpwm.search.service.model.ErRequest.ErUserRequest;
-import com.wpwm.er_wpwm.search.service.model.ErResponse;
-import com.wpwm.er_wpwm.search.service.model.ErResponse.ErGameInfoResponse;
-import com.wpwm.er_wpwm.search.service.model.ErResponse.ErGameIdResponse;
-import com.wpwm.er_wpwm.search.service.model.ErResponse.ErUserResponse;
+import com.wpwm.er_wpwm.search.client.model.ErRequest;
+import com.wpwm.er_wpwm.search.client.model.ErRequest.ErGameInfoRequest;
+import com.wpwm.er_wpwm.search.client.model.ErRequest.ErGameIdRequest;
+import com.wpwm.er_wpwm.search.client.model.ErRequest.ErUserRequest;
+import com.wpwm.er_wpwm.search.client.model.ErResponse.ErGameInfoResponse;
+import com.wpwm.er_wpwm.search.client.model.ErResponse.ErGameIdResponse;
+import com.wpwm.er_wpwm.search.client.model.ErResponse.ErUserResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
@@ -39,9 +39,9 @@ public class ErClient extends Client {
         return get("v1/user/games/" + userNum, request, ErGameIdResponse.class, makeHeaders());
     }
 
-    public ErGameInfoResponse getGameInfo(ErGameIdRequest request){
+    public ErGameInfoResponse getGameInfo(int gameId){
         sleep();
-        return get("v1/user/games/", ErGameInfoResponse.class, makeHeaders());
+        return get("v1/games/" + gameId, ErGameInfoResponse.class, makeHeaders());
     }
 
     private HttpHeaders makeHeaders() {
