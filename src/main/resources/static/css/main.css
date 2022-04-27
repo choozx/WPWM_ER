@@ -1,0 +1,15 @@
+.gameInfoClass{
+    border: 1px solid;
+}
+
+.playerClass{
+    border: 1px solid cornflowerblue;
+}
+
+.playerNickNameClass{
+    float: left;
+}
+
+.playerCharacterNumClass{
+    float: left;
+}

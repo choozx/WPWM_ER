@@ -2,6 +2,7 @@
 <html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
 
@@ -35,24 +36,34 @@
         console.log(gameInfoResponse);
 
         let gameList = gameInfoResponse.data;
-        gameList.forEach(function (element, gameNum){
+        gameList.forEach(function (element){
 
-            let newDiv = document.createElement('div');
-            newDiv.className = 'gameInfoClass';
-            newDiv.id = 'gameInfoId' + gameNum;
-            document.querySelector("#allGameInfo").appendChild(newDiv);
-            document.querySelector(".gameInfoClass").style.borderWidth = "1px";
+            let newDiv1 = document.createElement('div');
+            newDiv1.className = 'gameInfoClass';
+            newDiv1.id = 'gameInfoId' + element.gameId;
+            document.querySelector("#allGameInfo").appendChild(newDiv1);
 
             let playerInfos = element.playerInfos;
-            playerInfos.forEach(function (player,playerNum){
+            playerInfos.forEach(function (player){
 
-                let newDiv = document.createElement('div');
-                newDiv.className = 'playerInfoClass';
-                newDiv.id = 'player' + playerNum;
-                document.querySelector("#gameInfoId" + gameNum).appendChild(newDiv);
+                let newDiv2 = document.createElement('div');
 
-                document.querySelector("#player" + playerNum).innerHTML = player.nickname;  //id지정자를 생각좀 해봐야 할듯. ) player0,player1...이게 계속 겹침
-                document.querySelector("#player" + playerNum).innerHTML = player.characterNum;
+                newDiv2.className = 'playerClass';
+                newDiv2.id = 'player' + player.userNum + element.gameId;
+                document.querySelector("#gameInfoId" + element.gameId).appendChild(newDiv2);
+
+                let newDiv3 = document.createElement('div');
+                newDiv3.className = 'playerNickNameClass';
+                newDiv3.id = 'nickName' + player.userNum + element.gameId;
+                document.querySelector("#player" + player.userNum + element.gameId).appendChild(newDiv3);
+
+                let newDiv4 = document.createElement('div');
+                newDiv4.className = 'playerCharacterNumClass';
+                newDiv4.id = 'characterNum' + player.userNum + element.gameId;
+                document.querySelector("#player" + player.userNum + element.gameId).appendChild(newDiv4);
+
+                document.querySelector("#nickName" + player.userNum + element.gameId).innerHTML = player.nickName;  //id지정자를 생각좀 해봐야 할듯. ) player0,player1...이게 계속 겹침
+                document.querySelector("#characterNum" + player.userNum + element.gameId).innerHTML = player.characterNum;
             });
 
         });

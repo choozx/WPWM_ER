@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class PlayerInfo {
 
     private String userNum;
-    private String nickname;
+    private String nickName;
     private int gameId;
     private String seasonId;
     private String matchingMode;

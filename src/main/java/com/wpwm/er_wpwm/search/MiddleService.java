@@ -207,7 +207,7 @@ public class MiddleService {
             PlayerInfo playerInfo = PlayerInfo.builder()
                     .gameId(player.getGameId())
                     .userNum(player.getUserNum())
-                    .nickname(player.getNickname())
+                    .nickName(player.getNickname())
                     .seasonId(player.getSeasonId())
                     .matchingMode(player.getMatchingMode())
                     .matchingTeamMode(player.getMatchingTeamMode())
