@@ -16,6 +16,9 @@
 <button id="update" onclick="update()">전적갱신</button>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script type="text/javascript"></script>
+</body>
+</html>
+
 <script>
 
     let query = window.location.search;
@@ -38,32 +41,25 @@
         let gameList = gameInfoResponse.data;
         gameList.forEach(function (element){
 
-            let newDiv1 = document.createElement('div');
-            newDiv1.className = 'gameInfoClass';
-            newDiv1.id = 'gameInfoId' + element.gameId;
-            document.querySelector("#allGameInfo").appendChild(newDiv1);
+            const gameInfoDiv = createTag('div', 'gameInfoId' + element.gameId, 'gameInfoClass');
+
+            append("#allGameInfo", gameInfoDiv)
 
             let playerInfos = element.playerInfos;
             playerInfos.forEach(function (player){
 
-                let newDiv2 = document.createElement('div');
+                const playerIdentifyStr =  player.userNum + element.gameId;
 
-                newDiv2.className = 'playerClass';
-                newDiv2.id = 'player' + player.userNum + element.gameId;
-                document.querySelector("#gameInfoId" + element.gameId).appendChild(newDiv2);
+                const playerDiv = createTag('div',  'player' +playerIdentifyStr, 'playerClass');
+                const playerNickNameDiv =  createTag('div',  'nickName' +playerIdentifyStr, 'playerNickNameClass');
+                const playerCharacterNumDiv = createTag('div', 'characterNum' +playerIdentifyStr, 'playerCharacterNumClass');
 
-                let newDiv3 = document.createElement('div');
-                newDiv3.className = 'playerNickNameClass';
-                newDiv3.id = 'nickName' + player.userNum + element.gameId;
-                document.querySelector("#player" + player.userNum + element.gameId).appendChild(newDiv3);
+                append("#gameInfoId" + element.gameId, playerDiv);
+                append("#player" +playerIdentifyStr, playerNickNameDiv);
+                append("#player" +playerIdentifyStr, playerCharacterNumDiv);
 
-                let newDiv4 = document.createElement('div');
-                newDiv4.className = 'playerCharacterNumClass';
-                newDiv4.id = 'characterNum' + player.userNum + element.gameId;
-                document.querySelector("#player" + player.userNum + element.gameId).appendChild(newDiv4);
-
-                document.querySelector("#nickName" + player.userNum + element.gameId).innerHTML = player.nickName;  //id지정자를 생각좀 해봐야 할듯. ) player0,player1...이게 계속 겹침
-                document.querySelector("#characterNum" + player.userNum + element.gameId).innerHTML = player.characterNum;
+                document.querySelector("#nickName" + playerIdentifyStr).innerHTML = player.nickName;  //id지정자를 생각좀 해봐야 할듯. ) player0,player1...이게 계속 겹침
+                document.querySelector("#characterNum" +playerIdentifyStr).innerHTML = player.characterNum;
             });
 
         });
@@ -76,6 +72,25 @@
         let userResponse = await axios.post("/updateGames?nickname=" + nickname + "&userNum=" + userNum);
     }
 
+
+
+    function createTag(tagType, id, className){
+        let div = document.createElement(tagType);
+        if(id){
+            div.id = id;
+        }
+        if(className){
+            div.className = className;
+        }
+        return div;
+    }
+
+    function append(targetTag, appendTag){
+        document.querySelector(targetTag).appendChild(appendTag);
+    }
+
+
+
+
+
 </script>
-</body>
-</html>
