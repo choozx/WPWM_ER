@@ -2,8 +2,10 @@ package com.wpwm.er_wpwm.search;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wpwm.er_wpwm.dto.ErUserForm;
+import com.wpwm.er_wpwm.dto.StreamerForm;
 import com.wpwm.er_wpwm.entity.*;
 import com.wpwm.er_wpwm.exception.ErrorPageException;
+import com.wpwm.er_wpwm.includeModel.StreamerInfo;
 import com.wpwm.er_wpwm.includeModel.UserInfo;
 import com.wpwm.er_wpwm.includeModel.GameId;
 import com.wpwm.er_wpwm.includeModel.player.PlayerInfo;
@@ -38,6 +40,7 @@ public class MiddleService {
     private final PlayerRepository playerRepository;
     private final MasteryRepository masteryRepository;
     private final EquipmentRepository equipmentRepository;
+    private final StreamerRepository streamerRepository;
     private final ErClient erClient;
 
     private final ObjectMapper objectMapper;
@@ -133,6 +136,44 @@ public class MiddleService {
         return newGameId;
     }
 
+    public List<PlayerInfo> getPlayerFromDB(GameId gameId) {
+        List<PlayerInfo> playerInfoList = new ArrayList<>();
+        List<Player> players = playerRepository.findByGameId(gameId.getGameId());
+
+        for (Player player:players) {
+            //마스터리랑 장비 객체 불러오기
+            MasteryInfo masteryInfo = getMasteryLevel(gameId);
+            EquipmentInfo equipmentInfo = getEquipment(gameId);
+
+            PlayerInfo playerInfo = PlayerInfo.builder()
+                    .gameId(player.getGameId())
+                    .userNum(player.getUserNum())
+                    .nickName(player.getNickname())
+                    .seasonId(player.getSeasonId())
+                    .matchingMode(player.getMatchingMode())
+                    .matchingTeamMode(player.getMatchingTeamMode())
+                    .characterNum(player.getCharacterNum())
+                    .skinCode(player.getSkinCode())
+                    .characterLevel(player.getCharacterLevel())
+                    .gameRank(player.getGameRank())
+                    .playerKill(player.getPlayerKill())
+                    .playerAssistant(player.getPlayerAssistant())
+                    .monsterKill(player.getMonsterKill())
+                    .bestWeapon(player.getBestWeapon())
+                    .bestWeaponLevel(player.getBestWeaponLevel())
+                    .versionMajor(player.getVersionMajor())
+                    .versionMinor(player.getVersionMinor())
+                    .language(player.getLanguage())
+                    .masteryInfo(masteryInfo)
+                    .equipmentInfo(equipmentInfo)
+                    .build();
+
+            playerInfoList.add(playerInfo);
+        }
+
+        return playerInfoList;
+    }
+
     public void savePlayerFromClient(GameId gameId) {
 
         ErGameInfoResponse response = erClient.getGameInfo(gameId.getGameId());
@@ -195,44 +236,15 @@ public class MiddleService {
         }
     }
 
-    public List<PlayerInfo> getPlayerFromDB(GameId gameId) {
-        List<PlayerInfo> playerInfoList = new ArrayList<>();
-        List<Player> players = playerRepository.findByGameId(gameId.getGameId());
-
-        for (Player player:players) {
-            //마스터리랑 장비 객체 불러오기
-            MasteryInfo masteryInfo = getMasteryLevel(gameId);
-            EquipmentInfo equipmentInfo = getEquipment(gameId);
-
-            PlayerInfo playerInfo = PlayerInfo.builder()
-                    .gameId(player.getGameId())
-                    .userNum(player.getUserNum())
-                    .nickName(player.getNickname())
-                    .seasonId(player.getSeasonId())
-                    .matchingMode(player.getMatchingMode())
-                    .matchingTeamMode(player.getMatchingTeamMode())
-                    .characterNum(player.getCharacterNum())
-                    .skinCode(player.getSkinCode())
-                    .characterLevel(player.getCharacterLevel())
-                    .gameRank(player.getGameRank())
-                    .playerKill(player.getPlayerKill())
-                    .playerAssistant(player.getPlayerAssistant())
-                    .monsterKill(player.getMonsterKill())
-                    .bestWeapon(player.getBestWeapon())
-                    .bestWeaponLevel(player.getBestWeaponLevel())
-                    .versionMajor(player.getVersionMajor())
-                    .versionMinor(player.getVersionMinor())
-                    .language(player.getLanguage())
-                    .masteryInfo(masteryInfo)
-                    .equipmentInfo(equipmentInfo)
-                    .build();
-
-            playerInfoList.add(playerInfo);
-        }
-
-        return playerInfoList;
+    public StreamerInfo getStreamerFromDB(StreamerForm streamerForm) {
+        Streamer streamer = streamerRepository.findByTwitchId(streamerForm.getTwitchId());
+        StreamerInfo streamerInfo = StreamerInfo.builder()
+                .userNum(streamer.getUserNum())
+                .twitchId(streamer.getTwitchId())
+                .nickName(streamer.getNickName())
+                .build();
+        return streamerInfo;
     }
-
 
     private Optional<GameIds> getLastGames(String userNum) {
         return gamesRepository.findTopByUserNumOrderByGameIdDesc(userNum);

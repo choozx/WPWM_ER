@@ -1,9 +1,11 @@
 package com.wpwm.er_wpwm.search;
 
 import com.wpwm.er_wpwm.dto.ErUserForm;
+import com.wpwm.er_wpwm.dto.StreamerForm;
 import com.wpwm.er_wpwm.entity.ErUser;
 import com.wpwm.er_wpwm.includeModel.GameId;
 import com.wpwm.er_wpwm.includeModel.GameInfo;
+import com.wpwm.er_wpwm.includeModel.StreamerInfo;
 import com.wpwm.er_wpwm.includeModel.UserInfo;
 import com.wpwm.er_wpwm.includeModel.player.PlayerInfo;
 import lombok.RequiredArgsConstructor;
@@ -65,4 +67,15 @@ public class ErService {
             }
         }
     }
+
+    public StreamerInfo getStreamer(StreamerForm streamerForm) {
+        return middleService.getStreamerFromDB(streamerForm);
+    }
+
+    public void saveStreamer(UserInfo userInfo) {
+        middleService.saveStreamerInfo(userInfo);
+        //https://api.twitch.tv/helix/users/follows?to_id=<user ID> 이거 써서 위에서 받아온 블서id랑 트위치 팔로워수 같이 저장
+        //트위치 API는 분당 30개로 제한 하기때문에 일정 시간대에서 스트리머 테이블에 있는 정보를 updtae하는 방식으로 해야될듯
+    }
+
 }

@@ -9,11 +9,18 @@
 <input type="hidden" id="nickName" value="">
 <input type="hidden" id="userNum" value="">
 
+<button id="update" onclick="updateGame()">전적갱신</button>
 <div id="allGameInfo">
-
 </div>
 
-<button id="update" onclick="update()">전적갱신</button>
+<hr>
+
+<h2>스트리머 등록</h2>
+<form action="/main" method="get">
+    블서 닉네임:<input name="erNickname" id="erNickname">
+    <button type="submit" onclick="regStreamer()">제출</button>
+</form>
+
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script type="text/javascript"></script>
 </body>
@@ -66,11 +73,22 @@
 
     }
 
-    async function update() {
+    async function updateGame() {
         let nickname = document.querySelector("#nickName").value;
         let userNum = document.querySelector("#userNum").value;
         let userResponse = await axios.post("/updateGames?nickname=" + nickname + "&userNum=" + userNum);
     }
+
+    async function regStreamer() {
+        let erNickname = document.querySelector("#erNickname").value;
+        if (await axios.get("/getStreamer?nickname=" + erNickname)){
+            alert("이미 존재하는 스트리머입니다");
+        } else {
+            await axios.post("/updateStreamer?nickname=" + erNickname);
+        }
+        let userResponse = await axios.get("/getStreamer?nickname=" + erNickname);
+    }
+
 
 
 
