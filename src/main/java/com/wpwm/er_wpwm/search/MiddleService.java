@@ -46,15 +46,15 @@ public class MiddleService {
     private final ObjectMapper objectMapper;
 
 
-    public Optional<ErUser> getUserFromDB(ErUserForm erUserForm) {
-        Optional<ErUser> erUserOptional = erUserRepository.findByNickName(erUserForm.getNickname());
+    public Optional<ErUser> getUserFromDB(String nickName) {
+        Optional<ErUser> erUserOptional = erUserRepository.findByNickName(nickName);
         return erUserOptional;
 
     }
 
-    public void saveUserFromClient(ErUserForm erUserForm) {
+    public void saveUserFromClient(String nickName) {
 
-        String name = UriUtils.encodeQueryParam(erUserForm.getNickname(), StandardCharsets.UTF_8.toString());
+        String name = UriUtils.encodeQueryParam(nickName, StandardCharsets.UTF_8.toString());
         ErUserRequest request = ErUserRequest.builder()
                 .query(name)
                 .build();
@@ -95,7 +95,7 @@ public class MiddleService {
 
         List<GameId> newGameId = new ArrayList<GameId>();
         Optional<GameIds> lastGamesOpt = getLastGames(userInfo.getUserNum());
-        int savePolicy = lastGamesOpt.isEmpty() ? 16750000 : lastGamesOpt.get().getGameId();
+        int savePolicy = lastGamesOpt.isEmpty() ? 16781070  : lastGamesOpt.get().getGameId();
 
 
         ErGameIdResponse response = erClient.getGameId(userInfo.getUserNum());
@@ -236,14 +236,60 @@ public class MiddleService {
         }
     }
 
-    public StreamerInfo getStreamerFromDB(StreamerForm streamerForm) {
-        Streamer streamer = streamerRepository.findByTwitchId(streamerForm.getTwitchId());
-        StreamerInfo streamerInfo = StreamerInfo.builder()
-                .userNum(streamer.getUserNum())
-                .twitchId(streamer.getTwitchId())
-                .nickName(streamer.getNickName())
+    public Optional<Streamer> getStreamerFromDB(StreamerForm streamerForm) {
+        Optional<Streamer> streamerOptional = streamerRepository.findByErNickname(streamerForm.getErNickname());
+
+        return streamerOptional;
+    }
+
+    public void saveStreamerFromClient(UserInfo userInfo) {
+
+        //트위치 api추가 예정
+
+        Streamer streamer = Streamer.builder()
+                .erNickname(userInfo.getNickName())
+                .userNum(userInfo.getUserNum())
                 .build();
-        return streamerInfo;
+
+        streamerRepository.save(streamer);
+    }
+
+    public List<StreamerInfo> testgetStreamerFromDB() {
+        List<Streamer> streamers = streamerRepository.findAll();
+        List<StreamerInfo> streamerInfoList = new ArrayList<>();
+        for (Streamer streamer : streamers) {
+            StreamerInfo streamerInfo = StreamerInfo.builder()
+                    .userNum(streamer.getUserNum())
+                    .nickName(streamer.getErNickname())
+                    .build();
+            streamerInfoList.add(streamerInfo);
+        }
+        return streamerInfoList;
+    }
+
+    public void testSaveStreamerFromClient(String nickName) {
+
+        String name = UriUtils.encodeQueryParam(nickName, StandardCharsets.UTF_8.toString());
+        ErUserRequest request = ErUserRequest.builder()
+                .query(name)
+                .build();
+
+        ErUserResponse erUserResponse = null;
+        try {
+            erUserResponse = erClient.getUser(request);
+        } catch (Exception e) {
+            throw new ErrorPageException("user guide page");
+        }
+        ErUserResponseInfo erUserResponseInfo = erUserResponse.getUser();
+
+        log.info("{}", erUserResponse);
+
+        Streamer streamer = Streamer.builder()
+                .userNum(erUserResponseInfo.getUserNum())
+                .erNickname(erUserResponseInfo.getNickname())
+                .build();
+
+        streamerRepository.save(streamer);
     }
 
     private Optional<GameIds> getLastGames(String userNum) {

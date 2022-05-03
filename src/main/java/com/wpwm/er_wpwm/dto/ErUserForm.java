@@ -3,7 +3,7 @@ package com.wpwm.er_wpwm.dto;
 import lombok.*;
 
 @AllArgsConstructor
-@Data
+@Getter
 @Builder
 @ToString
 public class ErUserForm {

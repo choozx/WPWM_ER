@@ -8,6 +8,7 @@ import java.util.Optional;
 
 public interface StreamerRepository extends JpaRepository <Streamer, Long>{
 
-
     Streamer findByTwitchId(String twitchId);
+
+    Optional<Streamer> findByErNickname(String erNickname);
 }

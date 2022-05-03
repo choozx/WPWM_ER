@@ -10,6 +10,14 @@
     <button type="submit">제출</button>
 </form>
 
+<h2>스트리머 등록</h2>
+<form action="/index" method="get">
+    블서 닉네임:<input name="erNickname" id="erNickname">
+    <button type="submit" onclick="regStreamer()">제출</button>
+</form>
+
+<button onclick="autoReg()">스트리머 자동등록</button>
+
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script type="text/javascript"></script>
 <script>
@@ -18,6 +26,21 @@
         let response = await axios.get("/getUser");
         console.log(response);
         document.querySelector("#list").innerHTML += response.data + '<br>';
+    }
+
+    async function regStreamer() {
+        let erNickname = document.querySelector("#erNickname").value;
+        let streamer = await axios.get("/getStreamer?erNickname=" + erNickname);
+
+        if (streamer != null){
+            alert("이미 존재하는 스트리머입니다");
+        } else {
+            await axios.post("/updateStreamer?erNickname=" + erNickname);
+        }
+    }
+
+    async function autoReg(){
+        await axios.post("/autoUpdateStreamer");
     }
 </script>
 </body>

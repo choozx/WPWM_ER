@@ -10,7 +10,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "ErUser")
+@Table(name = "Streamer")
 public class Streamer {
 
     @Id
@@ -20,8 +20,8 @@ public class Streamer {
 
     @Column(name = "userNum")
     private String userNum;
-    @Column(name = "nickName")
-    private String nickName;
+    @Column(name = "erNickname")
+    private String erNickname;
     @Column(name = "twitchId")
     private String twitchId;
 

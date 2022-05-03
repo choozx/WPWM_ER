@@ -15,12 +15,6 @@
 
 <hr>
 
-<h2>스트리머 등록</h2>
-<form action="/main" method="get">
-    블서 닉네임:<input name="erNickname" id="erNickname">
-    <button type="submit" onclick="regStreamer()">제출</button>
-</form>
-
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script type="text/javascript"></script>
 </body>
@@ -43,8 +37,11 @@
         document.querySelector("#userNum").value = userNum;
 
         let gameInfoResponse = await axios.get("/getGames?nickName=" + nickName + "&userNum=" + userNum);
+        let streamerResponse = await axios.get("/testGetStreamer");
         console.log(gameInfoResponse);
+        console.log(streamerResponse);
 
+        let streamerInfo = streamerResponse.data;
         let gameList = gameInfoResponse.data;
         gameList.forEach(function (element){
 
@@ -67,6 +64,12 @@
 
                 document.querySelector("#nickName" + playerIdentifyStr).innerHTML = player.nickName;  //id지정자를 생각좀 해봐야 할듯. ) player0,player1...이게 계속 겹침
                 document.querySelector("#characterNum" +playerIdentifyStr).innerHTML = player.characterNum;
+
+                streamerInfo.forEach(function (streamer) {
+                    if (streamer.userNum == player.userNum){
+                        document.querySelector("#player" +playerIdentifyStr).style.backgroundColor = "red";
+                    }
+                })
             });
 
         });
@@ -78,18 +81,6 @@
         let userNum = document.querySelector("#userNum").value;
         let userResponse = await axios.post("/updateGames?nickname=" + nickname + "&userNum=" + userNum);
     }
-
-    async function regStreamer() {
-        let erNickname = document.querySelector("#erNickname").value;
-        if (await axios.get("/getStreamer?nickname=" + erNickname)){
-            alert("이미 존재하는 스트리머입니다");
-        } else {
-            await axios.post("/updateStreamer?nickname=" + erNickname);
-        }
-        let userResponse = await axios.get("/getStreamer?nickname=" + erNickname);
-    }
-
-
 
 
     function createTag(tagType, id, className){

@@ -25,7 +25,7 @@ public class TestController {
 
     @GetMapping("/getUser")
     public UserInfo getUser(ErUserForm erUserForm) {
-        return erService.getUser(erUserForm);
+        return erService.getUser(erUserForm.getNickname());
     }
 
     @GetMapping("/getGames")
@@ -48,8 +48,18 @@ public class TestController {
 
     @PostMapping("/updateStreamer")
     public void updateStreamer(StreamerForm streamerForm){
-        UserInfo userInfo = erService.getUser(erUserForm);//getUser의 파라미터를 생각좀 해봐야할듯
+        UserInfo userInfo = erService.getUser(streamerForm.getErNickname());//getUser의 파라미터를 생각좀 해봐야할듯
         erService.saveStreamer(userInfo);
+    }
+
+    @GetMapping("/testGetStreamer")
+    public List<StreamerInfo> testGetStreamer() {
+        return erService.testGetStreamer();
+    }
+
+    @PostMapping("/autoUpdateStreamer")
+    public void autoUpdateStreamer(){
+        erService.autoSaveStreamer();
     }
 
 }
